@@ -20,6 +20,22 @@ process.on('unhandledRejection', (r) => console.error('unhandledRejection', r));
 
 app.get('/health', (req, res) => res.status(200).send('ok'));
 
+app.get('/health-db', async (req, res) => {
+  const result = await db.testConnection();
+  if (result.ok) return res.json({ ok: true, message: 'Banco conectado.' });
+  res.status(503).json({
+    ok: false,
+    message: result.message || 'Sem conexão',
+    hint: result.code === 'ECONNREFUSED'
+      ? 'MySQL não está rodando ou DB_HOST/DB_PORT no .env estão errados.'
+      : result.code === 'ER_ACCESS_DENIED_ERROR'
+      ? 'Usuário ou senha do MySQL no .env estão incorretos.'
+      : result.code === 'ER_BAD_DB_ERROR'
+      ? 'O banco não existe. Crie o banco e execute database/schema.sql'
+      : 'Verifique .env (DB_HOST, DB_USER, DB_PASSWORD, DB_NAME) e se o MySQL está ativo.',
+  });
+});
+
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
@@ -91,6 +107,8 @@ server.on('error', (e) => {
   process.exit(1);
 });
 
-db.testConnection().then(ok => {
+db.testConnection().then(result => {
+  const ok = result && result.ok;
   console.log(ok ? '[DB] MySQL OK' : '[DB] MySQL inacessível – confira .env e database/schema.sql');
+  if (!ok && result && result.message) console.log('[DB]', result.message);
 }).catch(() => {});

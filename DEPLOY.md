@@ -26,8 +26,26 @@ location / {
 ```
 A porta (`3000`) deve ser a mesma do `PORT` do Node.
 
-## 4. Banco de dados
-Se o MySQL não estiver acessível, o app **continua subindo**; só login/cadastro/dashboard falham. 503 costuma ser app não rodando ou proxy errado, não DB.
+## 4. Banco de dados (erro "Sem conexão com o banco")
+
+Se cadastro/login mostra **"Sem conexão com o banco"**:
+
+1. **Teste a conexão:** Acesse `https://seusite.com/health-db`. A resposta indica o problema:
+   - `ECONNREFUSED` → MySQL não está rodando ou `DB_HOST`/`DB_PORT` no `.env` estão errados.
+   - `ER_ACCESS_DENIED_ERROR` → `DB_USER` ou `DB_PASSWORD` no `.env` estão incorretos.
+   - `ER_BAD_DB_ERROR` → O banco não existe; crie o banco e execute `database/schema.sql`.
+
+2. **No servidor,** crie o arquivo `.env` (copie de `.env.example`) e preencha:
+   - `DB_HOST` (geralmente `127.0.0.1` se o MySQL está na mesma máquina)
+   - `DB_PORT` (geralmente `3306`)
+   - `DB_USER` e `DB_PASSWORD` (usuário do MySQL com permissão no banco)
+   - `DB_NAME` (nome do banco que você criou)
+
+3. **Crie o banco** no MySQL (phpMyAdmin ou `CREATE DATABASE nome_do_banco;`) e **execute** o conteúdo de `database/schema.sql` nesse banco.
+
+4. Reinicie a aplicação (ex.: `pm2 restart maisfreelas`).
+
+Se o MySQL não estiver acessível, o app continua subindo; só login/cadastro/dashboard falham. 503 na página costuma ser app não rodando ou proxy errado, não DB.
 
 ## 5. HTTPS e cookie de sessão
 Em produção com HTTPS, use no `.env`:
