@@ -6,6 +6,7 @@ const session = require('express-session');
 const cookieParser = require('cookie-parser');
 
 const db = require('./config/db');
+const { ensureDatabase } = require('./database/ensure');
 const authRoutes = require('./routes/auth');
 const projectRoutes = require('./routes/projects');
 const dashboardRoutes = require('./routes/dashboard');
@@ -43,6 +44,7 @@ app.get('/health-db', async (req, res) => {
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+app.set('trust proxy', 1);
 
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
@@ -55,6 +57,7 @@ app.use(session({
   saveUninitialized: false,
   name: 'maisfreelas.sid',
   cookie: {
+    path: '/',
     secure: process.env.NODE_ENV === 'production',
     maxAge: 7 * 24 * 60 * 60 * 1000,
     sameSite: 'lax',
@@ -103,17 +106,27 @@ app.use((err, req, res, next) => {
   if (!res.headersSent) res.status(500).send('Erro interno.');
 });
 
-const server = app.listen(PORT, HOST, () => {
-  console.log('MaisFreelas http://%s:%s', HOST, PORT);
-});
+function startServer() {
+  const server = app.listen(PORT, HOST, () => {
+    console.log('MaisFreelas http://%s:%s', HOST, PORT);
+  });
+  server.on('error', (e) => {
+    console.error('listen:', e.message);
+    process.exit(1);
+  });
+  db.testConnection().then(result => {
+    const ok = result && result.ok;
+    console.log(ok ? '[DB] MySQL OK' : '[DB] MySQL inacessível – confira .env');
+    if (!ok && result && result.message) console.log('[DB]', result.message);
+  }).catch(() => {});
+}
 
-server.on('error', (e) => {
-  console.error('listen:', e.message);
-  process.exit(1);
-});
-
-db.testConnection().then(result => {
-  const ok = result && result.ok;
-  console.log(ok ? '[DB] MySQL OK' : '[DB] MySQL inacessível – confira .env e database/schema.sql');
-  if (!ok && result && result.message) console.log('[DB]', result.message);
-}).catch(() => {});
+ensureDatabase()
+  .then(() => {
+    console.log('[DB] Banco e tabelas prontos (inicialização automática).');
+    startServer();
+  })
+  .catch((e) => {
+    console.error('[DB] Inicialização automática do banco falhou:', e.message);
+    startServer();
+  });

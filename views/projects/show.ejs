@@ -6,6 +6,7 @@
     <div class="project-meta-row">
       <span><strong>Categoria:</strong> <%= project.category %></span>
       <span><strong>Orçamento:</strong> R$ <%= Number(project.budget).toLocaleString('pt-BR') %></span>
+      <span><strong>Status:</strong> <%= project.status === 'open' ? 'Aberto' : project.status === 'in_progress' ? 'Em andamento' : project.status === 'completed' ? 'Concluído' : 'Cancelado' %></span>
       <span>Publicado por <strong><%= project.client_name %></strong></span>
     </div>
     <div class="project-description"><%= project.description %></div>
@@ -33,8 +34,18 @@
       <% if (proposals && proposals.length) { %>
       <% proposals.forEach(function(pr) { %>
       <div class="proposal-item">
-        <strong><%= pr.freelancer_name %></strong> — R$ <%= Number(pr.amount).toLocaleString('pt-BR') %> — <%= pr.delivery_time %> dias — <%= pr.status %>
+        <strong><%= pr.freelancer_name %></strong> — R$ <%= Number(pr.amount).toLocaleString('pt-BR') %> — <%= pr.delivery_time %> dias — <%= pr.status === 'pending' ? 'Pendente' : pr.status === 'accepted' ? 'Aceita' : 'Rejeitada' %>
         <div class="cover"><%= pr.cover_letter %></div>
+        <% if (isOwner && project.status === 'open' && pr.status === 'pending') { %>
+        <div class="proposal-actions">
+          <form action="/projetos/<%= project.id %>/proposta/<%= pr.id %>/aceitar" method="post" style="display:inline">
+            <button type="submit" class="btn btn-primary btn-sm">Aceitar</button>
+          </form>
+          <form action="/projetos/<%= project.id %>/proposta/<%= pr.id %>/rejeitar" method="post" style="display:inline">
+            <button type="submit" class="btn btn-ghost btn-sm">Rejeitar</button>
+          </form>
+        </div>
+        <% } %>
       </div>
       <% }); %>
       <% } else { %>

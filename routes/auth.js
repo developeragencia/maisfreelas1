@@ -12,13 +12,14 @@ router.get('/login', requireGuest, (req, res) => {
 });
 
 router.post('/login', requireGuest, async (req, res) => {
-  const { email, password } = req.body || {};
+  const email = (req.body && req.body.email) ? String(req.body.email).trim() : '';
+  const password = req.body && req.body.password ? String(req.body.password) : '';
   if (!email || !password) return res.render('login', { error: 'Preencha e-mail e senha.' });
   try {
-    const [rows] = await db.query('SELECT id, name, email, password, role FROM users WHERE email = ?', [String(email).trim()]);
-    if (!rows?.length) return res.render('login', { error: 'E-mail ou senha incorretos.' });
+    const [rows] = await db.query('SELECT id, name, email, password, role FROM users WHERE email = ?', [email]);
+    if (!rows || !rows.length) return res.render('login', { error: 'E-mail ou senha incorretos.' });
     const user = rows[0];
-    const ok = await bcrypt.compare(String(password), user.password || '');
+    const ok = await bcrypt.compare(password, user.password || '');
     if (!ok) return res.render('login', { error: 'E-mail ou senha incorretos.' });
     req.session.userId = user.id;
     req.session.userName = user.name;
@@ -28,7 +29,7 @@ router.post('/login', requireGuest, async (req, res) => {
         console.error('Session save:', err.message);
         return res.render('login', { error: 'Erro ao entrar. Tente de novo.' });
       }
-      res.redirect('/dashboard');
+      res.redirect(302, '/dashboard');
     });
   } catch (e) {
     console.error('Login:', e.message);
@@ -60,19 +61,7 @@ router.post('/cadastro', requireGuest, async (req, res) => {
   } catch (e) {
     console.error('Cadastro:', e.code || e.message);
     if (e.code === 'ER_DUP_ENTRY') return res.render('register', { error: 'Este e-mail já está cadastrado.' });
-    // Em produção não expor detalhes de banco (.env, MySQL) ao usuário
-    const msgBanco = process.env.NODE_ENV === 'production'
-      ? 'Estamos com um problema temporário. Tente novamente em alguns minutos.'
-      : (e.code === 'ECONNREFUSED'
-        ? 'MySQL não está rodando ou host/porta no .env estão incorretos.'
-        : e.code === 'ER_ACCESS_DENIED_ERROR'
-        ? 'Usuário ou senha do MySQL incorretos no .env.'
-        : e.code === 'ER_BAD_DB_ERROR'
-        ? 'O banco não existe. Crie o banco e execute database/schema.sql'
-        : e.code === 'ER_NO_SUCH_TABLE'
-        ? 'Tabelas não existem. Execute database/schema.sql.'
-        : (e.sqlMessage || e.message));
-    return res.render('register', { error: msgBanco });
+    return res.render('register', { error: 'Estamos com um problema temporário. Tente novamente em alguns minutos.' });
   }
 });
 

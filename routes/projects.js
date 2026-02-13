@@ -36,6 +36,38 @@ router.post('/publicar', requireAuth, async (req, res) => {
   }
 });
 
+router.post('/:id/proposta/:proposalId/aceitar', requireAuth, async (req, res) => {
+  const projectId = parseInt(req.params.id, 10);
+  const proposalId = parseInt(req.params.proposalId, 10);
+  if (!projectId || !proposalId) return res.redirect('/projetos');
+  try {
+    const [projects] = await db.query('SELECT id, client_id, status FROM projects WHERE id = ?', [projectId]);
+    if (!projects?.length || projects[0].client_id !== req.session.userId || projects[0].status !== 'open') return res.redirect('/projetos');
+    const [proposals] = await db.query('SELECT id, freelancer_id FROM proposals WHERE id = ? AND project_id = ?', [proposalId, projectId]);
+    if (!proposals?.length) return res.redirect('/projetos/' + projectId);
+    await db.query('UPDATE projects SET status = ?, freelancer_id = ? WHERE id = ?', ['in_progress', proposals[0].freelancer_id, projectId]);
+    await db.query('UPDATE proposals SET status = ? WHERE id = ?', ['accepted', proposalId]);
+    await db.query('UPDATE proposals SET status = ? WHERE project_id = ? AND id != ?', ['rejected', projectId, proposalId]);
+    res.redirect('/projetos/' + projectId);
+  } catch (e) {
+    res.redirect('/projetos/' + projectId);
+  }
+});
+
+router.post('/:id/proposta/:proposalId/rejeitar', requireAuth, async (req, res) => {
+  const projectId = parseInt(req.params.id, 10);
+  const proposalId = parseInt(req.params.proposalId, 10);
+  if (!projectId || !proposalId) return res.redirect('/projetos');
+  try {
+    const [projects] = await db.query('SELECT id, client_id FROM projects WHERE id = ?', [projectId]);
+    if (!projects?.length || projects[0].client_id !== req.session.userId) return res.redirect('/projetos');
+    await db.query('UPDATE proposals SET status = ? WHERE id = ? AND project_id = ?', ['rejected', proposalId, projectId]);
+    res.redirect('/projetos/' + projectId);
+  } catch (e) {
+    res.redirect('/projetos/' + projectId);
+  }
+});
+
 router.get('/:id', async (req, res) => {
   const id = parseInt(req.params.id, 10);
   if (!id) return res.redirect('/projetos');
@@ -48,7 +80,8 @@ router.get('/:id', async (req, res) => {
       `SELECT pr.*, u.name as freelancer_name FROM proposals pr JOIN users u ON pr.freelancer_id = u.id WHERE pr.project_id = ? ORDER BY pr.created_at DESC`, [id]
     );
     const canPropose = req.session?.userId && projects[0].client_id !== req.session.userId && projects[0].status === 'open';
-    res.render('projects/show', { project: projects[0], proposals: proposals || [], canPropose, user: res.locals.user });
+    const isOwner = req.session?.userId && projects[0].client_id === req.session.userId;
+    res.render('projects/show', { project: projects[0], proposals: proposals || [], canPropose, isOwner, user: res.locals.user });
   } catch (e) {
     res.redirect('/projetos');
   }
@@ -67,6 +100,7 @@ router.post('/:id/proposta', requireAuth, async (req, res) => {
     );
     res.redirect('/projetos/' + id);
   } catch (e) {
+    if (e.code === 'ER_DUP_ENTRY') return res.redirect('/projetos/' + id + '?erro=ja-enviou');
     res.redirect('/projetos/' + id);
   }
 });
