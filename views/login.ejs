@@ -1,20 +1,20 @@
 <%- include('partials/header') %>
-  <div class="container">
+<div class="container">
   <div class="form-page">
     <div class="form-card">
       <h1>Entrar</h1>
-      <% if (error) { %><p class="error"><%= error %></p><% } %>
-      <form action="/login" method="post" class="form">
-        <label>E-mail
-          <input type="email" name="email" required placeholder="seu@email.com" autocomplete="email">
-        </label>
-        <label>Senha
-          <input type="password" name="password" required placeholder="••••••••" autocomplete="current-password">
-        </label>
+      <% if (typeof error === 'string' && error) { %>
+        <p class="error"><%= error %></p>
+      <% } %>
+      <form action="/login" method="post" class="form" id="form-login">
+        <label for="email">E-mail</label>
+        <input id="email" type="email" name="email" required placeholder="seu@email.com" autocomplete="email" value="">
+        <label for="password">Senha</label>
+        <input id="password" type="password" name="password" required placeholder="••••••••" autocomplete="current-password">
         <button type="submit" class="btn btn-primary">Entrar</button>
       </form>
       <p class="form-footer">Não tem conta? <a href="/cadastro">Cadastre-se</a></p>
     </div>
   </div>
-  </div>
+</div>
 <%- include('partials/footer') %>
