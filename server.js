@@ -12,7 +12,8 @@ const dashboardRoutes = require('./routes/dashboard');
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
-const HOST = process.env.NODE_ENV === 'production' ? '0.0.0.0' : 'localhost';
+// Em produção (PORT definido) ou NODE_ENV=production: escutar em 0.0.0.0 para o proxy não retornar 503
+const HOST = process.env.HOST || (process.env.PORT || process.env.NODE_ENV === 'production' ? '0.0.0.0' : 'localhost');
 
 process.on('uncaughtException', (e) => console.error('uncaughtException', e.message));
 process.on('unhandledRejection', (r) => console.error('unhandledRejection', r));
