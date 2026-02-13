@@ -405,11 +405,11 @@ body {
 
 /* ===== Formulários (login, cadastro, publicar) ===== */
 .form-page {
-  min-height: 70vh;
+  min-height: calc(100vh - 12rem);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem 0;
+  padding: 2rem 0 3rem;
 }
 .form-card {
   width: 100%;

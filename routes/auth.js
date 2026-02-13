@@ -60,11 +60,19 @@ router.post('/cadastro', requireGuest, async (req, res) => {
   } catch (e) {
     console.error('Cadastro:', e.code || e.message);
     if (e.code === 'ER_DUP_ENTRY') return res.render('register', { error: 'Este e-mail já está cadastrado.' });
-    if (e.code === 'ECONNREFUSED') return res.render('register', { error: 'MySQL não está rodando ou host/porta no .env estão incorretos. Acesse /health-db no site para diagnosticar.' });
-    if (e.code === 'ER_ACCESS_DENIED_ERROR') return res.render('register', { error: 'Usuário ou senha do MySQL incorretos. Corrija DB_USER e DB_PASSWORD no .env' });
-    if (e.code === 'ER_BAD_DB_ERROR') return res.render('register', { error: 'O banco não existe. Crie o banco no painel (phpMyAdmin/cPanel) e execute database/schema.sql' });
-    if (e.code === 'ER_NO_SUCH_TABLE') return res.render('register', { error: 'Tabelas não existem. Execute database/schema.sql no phpMyAdmin.' });
-    res.render('register', { error: process.env.NODE_ENV === 'production' ? 'Erro ao cadastrar. Verifique a conexão com o banco.' : (e.sqlMessage || e.message) });
+    // Em produção não expor detalhes de banco (.env, MySQL) ao usuário
+    const msgBanco = process.env.NODE_ENV === 'production'
+      ? 'Estamos com um problema temporário. Tente novamente em alguns minutos.'
+      : (e.code === 'ECONNREFUSED'
+        ? 'MySQL não está rodando ou host/porta no .env estão incorretos.'
+        : e.code === 'ER_ACCESS_DENIED_ERROR'
+        ? 'Usuário ou senha do MySQL incorretos no .env.'
+        : e.code === 'ER_BAD_DB_ERROR'
+        ? 'O banco não existe. Crie o banco e execute database/schema.sql'
+        : e.code === 'ER_NO_SUCH_TABLE'
+        ? 'Tabelas não existem. Execute database/schema.sql.'
+        : (e.sqlMessage || e.message));
+    return res.render('register', { error: msgBanco });
   }
 });
 
