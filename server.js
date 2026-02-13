@@ -12,8 +12,8 @@ const dashboardRoutes = require('./routes/dashboard');
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
-// Em produção (PORT definido) ou NODE_ENV=production: escutar em 0.0.0.0 para o proxy não retornar 503
-const HOST = process.env.HOST || (process.env.PORT || process.env.NODE_ENV === 'production' ? '0.0.0.0' : 'localhost');
+// Sempre 0.0.0.0 se PORT vier do ambiente (produção), senão proxy não alcança = 503
+const HOST = process.env.HOST || (process.env.PORT ? '0.0.0.0' : 'localhost');
 
 process.on('uncaughtException', (e) => console.error('uncaughtException', e.message));
 process.on('unhandledRejection', (r) => console.error('unhandledRejection', r));
@@ -21,19 +21,24 @@ process.on('unhandledRejection', (r) => console.error('unhandledRejection', r));
 app.get('/health', (req, res) => res.status(200).send('ok'));
 
 app.get('/health-db', async (req, res) => {
-  const result = await db.testConnection();
-  if (result.ok) return res.json({ ok: true, message: 'Banco conectado.' });
-  res.status(503).json({
-    ok: false,
-    message: result.message || 'Sem conexão',
-    hint: result.code === 'ECONNREFUSED'
-      ? 'MySQL não está rodando ou DB_HOST/DB_PORT no .env estão errados.'
-      : result.code === 'ER_ACCESS_DENIED_ERROR'
-      ? 'Usuário ou senha do MySQL no .env estão incorretos.'
-      : result.code === 'ER_BAD_DB_ERROR'
-      ? 'O banco não existe. Crie o banco e execute database/schema.sql'
-      : 'Verifique .env (DB_HOST, DB_USER, DB_PASSWORD, DB_NAME) e se o MySQL está ativo.',
-  });
+  try {
+    const result = await db.testConnection();
+    if (result && result.ok) return res.json({ ok: true, message: 'Banco conectado.' });
+    res.status(503).json({
+      ok: false,
+      message: (result && result.message) || 'Sem conexão',
+      hint: (result && result.code) === 'ECONNREFUSED'
+        ? 'MySQL não está rodando ou DB_HOST/DB_PORT no .env estão errados.'
+        : (result && result.code) === 'ER_ACCESS_DENIED_ERROR'
+        ? 'Usuário ou senha do MySQL no .env estão incorretos.'
+        : (result && result.code) === 'ER_BAD_DB_ERROR'
+        ? 'O banco não existe. Crie o banco e execute database/schema.sql'
+        : 'Verifique .env (DB_HOST, DB_USER, DB_PASSWORD, DB_NAME) e se o MySQL está ativo.',
+    });
+  } catch (e) {
+    console.error('health-db:', e.message);
+    res.status(503).json({ ok: false, message: 'Erro ao verificar banco.' });
+  }
 });
 
 app.set('view engine', 'ejs');

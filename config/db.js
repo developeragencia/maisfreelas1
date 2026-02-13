@@ -33,7 +33,22 @@ function getConfig() {
   };
 }
 
-const pool = mysql.createPool(getConfig());
+let pool;
+try {
+  pool = mysql.createPool(getConfig());
+} catch (e) {
+  console.error('[DB] createPool:', e.message);
+  pool = mysql.createPool({
+    host: '127.0.0.1',
+    port: 3306,
+    user: '',
+    password: '',
+    database: '',
+    waitForConnections: true,
+    connectionLimit: 2,
+    charset: 'utf8mb4',
+  });
+}
 
 async function testConnection() {
   try {

@@ -1,11 +1,15 @@
 # Evitar erro 503 (Service Unavailable)
 
-Se a página de login (ou o site) retorna **503**, o proxy (Nginx, etc.) não está conseguindo falar com o Node. Confira:
+Se o site abre **503 Service Unavailable**, o servidor web (Nginx/Apache) não está recebendo resposta do Node. Siga na ordem:
 
-## 1. App escutando em todas as interfaces
-O servidor já está configurado para usar `0.0.0.0` quando `PORT` ou `NODE_ENV=production` estão definidos. No servidor, garanta:
-- `PORT=3000` (ou a porta que o proxy usa)
-- Ou `NODE_ENV=production`
+## 1. Node está rodando?
+No servidor (SSH): `pm2 list` ou `ps aux | grep node`. Se não estiver, inicie:
+- `cd /caminho/do/projeto && PORT=3000 pm2 start server.js --name maisfreelas`
+- Ou use o comando que sua hospedagem indica para iniciar a aplicação Node.
+
+## 2. App escutando em 0.0.0.0
+Quando a variável **PORT** está definida (ex.: `PORT=3000`), o app já escuta em `0.0.0.0`. Garanta no `.env` ou no comando de start:
+- `PORT=3000` (ou a mesma porta que o Nginx usa no `proxy_pass`)
 
 ## 2. Processo Node rodando
 - **PM2:** `pm2 start server.js --name maisfreelas` e `pm2 save`
