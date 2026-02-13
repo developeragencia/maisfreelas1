@@ -4,28 +4,47 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><%= typeof title !== 'undefined' ? title : 'MaisFreelas' %></title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: '#6366f1',
+            'brand-light': '#818cf8',
+          },
+          fontFamily: { sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'] },
+        },
+      },
+    };
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
 </head>
-<body>
-  <header class="header">
-    <a href="/" class="logo">MaisFreelas</a>
-    <nav>
-      <a href="/projetos">Projetos</a>
-      <% if (user) { %>
-        <a href="/dashboard">Dashboard</a>
-        <div class="user-menu">
+<body class="antialiased">
+  <header class="site-header" id="site-header">
+    <div class="header-inner">
+      <a href="/" class="site-logo">MaisFreelas</a>
+      <nav class="site-nav">
+        <a href="/projetos">Projetos</a>
+        <% if (user) { %>
+          <a href="/dashboard">Dashboard</a>
+        <% } else { %>
+          <a href="/login">Entrar</a>
+        <% } %>
+      </nav>
+      <div class="header-actions">
+        <% if (user) { %>
           <span class="user-name"><%= user.name %></span>
           <form action="/logout" method="post" style="display:inline">
             <button type="submit" class="btn-logout">Sair</button>
           </form>
-        </div>
-      <% } else { %>
-        <a href="/login">Entrar</a>
-        <a href="/cadastro" class="btn">Cadastrar</a>
-      <% } %>
-    </nav>
+        <% } else { %>
+          <a href="/cadastro" class="btn btn-primary">Cadastrar</a>
+        <% } %>
+      </div>
+    </div>
   </header>
   <main class="main">

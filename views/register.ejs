@@ -1,26 +1,28 @@
 <%- include('partials/header') %>
-  <section class="form-section">
-    <h1>Criar conta</h1>
-    <% if (error) { %><p class="error"><%= error %></p><% } %>
-    <form action="/cadastro" method="post" class="form">
-      <label>Nome
-        <input type="text" name="name" required placeholder="Seu nome" autocomplete="name">
-      </label>
-      <label>E-mail
-        <input type="email" name="email" required placeholder="seu@email.com" autocomplete="email">
-      </label>
-      <label>Senha (mín. 6 caracteres)
-        <input type="password" name="password" required minlength="6" placeholder="••••••••" autocomplete="new-password">
-      </label>
-      <label>Quero atuar como
-        <select name="role">
-          <option value="both">Cliente e Freelancer</option>
-          <option value="client">Só Cliente</option>
-          <option value="freelancer">Só Freelancer</option>
-        </select>
-      </label>
-      <button type="submit" class="btn">Cadastrar</button>
-    </form>
-    <p class="form-footer">Já tem conta? <a href="/login">Entrar</a></p>
-  </section>
+  <div class="form-page">
+    <div class="form-card">
+      <h1>Criar conta</h1>
+      <% if (error) { %><p class="error"><%= error %></p><% } %>
+      <form action="/cadastro" method="post" class="form">
+        <label>Nome
+          <input type="text" name="name" required placeholder="Seu nome" autocomplete="name">
+        </label>
+        <label>E-mail
+          <input type="email" name="email" required placeholder="seu@email.com" autocomplete="email">
+        </label>
+        <label>Senha (mín. 6 caracteres)
+          <input type="password" name="password" required minlength="6" placeholder="••••••••" autocomplete="new-password">
+        </label>
+        <label>Quero atuar como
+          <select name="role">
+            <option value="both">Cliente e Freelancer</option>
+            <option value="client">Só Cliente</option>
+            <option value="freelancer">Só Freelancer</option>
+          </select>
+        </label>
+        <button type="submit" class="btn btn-primary">Cadastrar</button>
+      </form>
+      <p class="form-footer">Já tem conta? <a href="/login">Entrar</a></p>
+    </div>
+  </div>
 <%- include('partials/footer') %>

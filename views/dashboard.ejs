@@ -1,46 +1,48 @@
 <%- include('partials/header') %>
-  <section class="dashboard-welcome">
-    <h1>Olá, <%= user.name %>!</h1>
-    <p>Gerencie seus projetos e propostas aqui.</p>
-  </section>
-
-  <div class="dashboard-grid">
-    <div class="dashboard-panel">
-      <h2>Meus projetos</h2>
-      <% if (myProjects && myProjects.length) { %>
-      <ul class="list">
-        <% myProjects.forEach(function(p) { %>
-        <li>
-          <a href="/projetos/<%= p.id %>"><%= p.title %></a>
-          <div class="meta">Status: <%= p.status %> — R$ <%= Number(p.budget).toLocaleString('pt-BR') %></div>
-        </li>
-        <% }); %>
-      </ul>
-      <% } else { %>
-      <div class="empty-state">
-        <p>Nenhum projeto publicado.</p>
-        <a href="/projetos/publicar" class="btn">Publicar projeto</a>
-      </div>
-      <% } %>
+  <div class="dashboard-wrap">
+    <div class="dashboard-welcome">
+      <h1>Olá, <%= user.name %>!</h1>
+      <p>Gerencie seus projetos e propostas aqui.</p>
     </div>
 
-    <div class="dashboard-panel">
-      <h2>Minhas propostas</h2>
-      <% if (myProposals && myProposals.length) { %>
-      <ul class="list">
-        <% myProposals.forEach(function(pr) { %>
-        <li>
-          <a href="/projetos/<%= pr.project_id %>"><%= pr.project_title %></a>
-          <div class="meta">R$ <%= Number(pr.amount).toLocaleString('pt-BR') %> — <%= pr.delivery_time %> dias — Status: <%= pr.status %></div>
-        </li>
-        <% }); %>
-      </ul>
-      <% } else { %>
-      <div class="empty-state">
-        <p>Nenhuma proposta enviada.</p>
-        <a href="/projetos" class="btn">Ver projetos</a>
+    <div class="dashboard-grid">
+      <div class="dashboard-panel">
+        <h2>Meus projetos</h2>
+        <% if (myProjects && myProjects.length) { %>
+        <ul class="panel-list">
+          <% myProjects.forEach(function(p) { %>
+          <li>
+            <a href="/projetos/<%= p.id %>"><%= p.title %></a>
+            <div class="meta">Status: <%= p.status %> — R$ <%= Number(p.budget).toLocaleString('pt-BR') %></div>
+          </li>
+          <% }); %>
+        </ul>
+        <% } else { %>
+        <div class="empty-state">
+          <p>Nenhum projeto publicado.</p>
+          <a href="/projetos/publicar" class="btn btn-primary">Publicar projeto</a>
+        </div>
+        <% } %>
       </div>
-      <% } %>
+
+      <div class="dashboard-panel">
+        <h2>Minhas propostas</h2>
+        <% if (myProposals && myProposals.length) { %>
+        <ul class="panel-list">
+          <% myProposals.forEach(function(pr) { %>
+          <li>
+            <a href="/projetos/<%= pr.project_id %>"><%= pr.project_title %></a>
+            <div class="meta">R$ <%= Number(pr.amount).toLocaleString('pt-BR') %> — <%= pr.delivery_time %> dias — Status: <%= pr.status %></div>
+          </li>
+          <% }); %>
+        </ul>
+        <% } else { %>
+        <div class="empty-state">
+          <p>Nenhuma proposta enviada.</p>
+          <a href="/projetos" class="btn btn-primary">Ver projetos</a>
+        </div>
+        <% } %>
+      </div>
     </div>
   </div>
 <%- include('partials/footer') %>

@@ -1,16 +1,16 @@
 <%- include('../partials/header') %>
-  <section class="section project-detail">
+  <section class="section project-detail-wrap">
     <a href="/projetos" class="back-link">← Voltar aos projetos</a>
     <h1><%= project.title %></h1>
-    <div class="project-meta-inline">
+    <div class="project-meta-row">
       <span><strong>Categoria:</strong> <%= project.category %></span>
       <span><strong>Orçamento:</strong> R$ <%= Number(project.budget).toLocaleString('pt-BR') %></span>
       <span>Publicado por <strong><%= project.client_name %></strong></span>
     </div>
-    <div class="description"><%= project.description %></div>
+    <div class="project-description"><%= project.description %></div>
 
     <% if (canPropose && user) { %>
-    <div class="proposal-form-box">
+    <div class="proposal-box">
       <h2>Enviar proposta</h2>
       <form action="/projetos/<%= project.id %>/proposta" method="post" class="form">
         <label>Carta de apresentação
@@ -22,12 +22,12 @@
         <label>Prazo (dias)
           <input type="number" name="delivery_time" required min="1" placeholder="Ex: 7">
         </label>
-        <button type="submit" class="btn">Enviar proposta</button>
+        <button type="submit" class="btn btn-primary">Enviar proposta</button>
       </form>
     </div>
     <% } %>
 
-    <div class="proposals-list">
+    <div class="proposals-section">
       <h2>Propostas (<%= proposals.length %>)</h2>
       <% if (proposals && proposals.length) { %>
       <% proposals.forEach(function(pr) { %>

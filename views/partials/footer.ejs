@@ -1,6 +1,16 @@
   </main>
-  <footer class="footer">
-    <p>MaisFreelas &copy; <%= new Date().getFullYear() %> — Conectando projetos e freelancers.</p>
+  <footer class="site-footer">
+    <p>MaisFreelas &copy; <%= new Date().getFullYear() %> — Conectando projetos e freelancers de forma profissional.</p>
   </footer>
+  <script>
+    (function() {
+      var header = document.getElementById('site-header');
+      if (header) {
+        window.addEventListener('scroll', function() {
+          header.classList.toggle('scrolled', window.scrollY > 20);
+        });
+      }
+    })();
+  </script>
 </body>
 </html>
