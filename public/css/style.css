@@ -39,12 +39,21 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ===== Header profissional ===== */
+/* ===== Container global (alinhamento consistente) ===== */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* ===== Header profissional - uma linha alinhada ===== */
 .site-header {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(12, 12, 16, 0.85);
+  width: 100%;
+  background: rgba(12, 12, 16, 0.92);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border);
@@ -52,17 +61,19 @@ body {
 }
 .site-header.scrolled { box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3); }
 .header-inner {
-  max-width: 1280px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0.875rem 1.5rem;
-  display: grid;
-  grid-template-columns: auto 1fr auto;
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  flex-wrap: nowrap;
   align-items: center;
+  justify-content: space-between;
   gap: 1.5rem;
 }
 .site-logo {
+  flex-shrink: 0;
   font-weight: 800;
-  font-size: 1.4rem;
+  font-size: 1.35rem;
   letter-spacing: -0.03em;
   color: var(--text);
   text-decoration: none;
@@ -72,8 +83,8 @@ body {
 .site-nav {
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 0.25rem;
+  flex-shrink: 0;
 }
 .site-nav a {
   color: var(--text-muted);
@@ -82,6 +93,7 @@ body {
   border-radius: var(--radius-sm);
   font-weight: 500;
   font-size: 0.95rem;
+  white-space: nowrap;
   transition: color var(--transition), background var(--transition);
 }
 .site-nav a:hover {
@@ -92,11 +104,13 @@ body {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  flex-shrink: 0;
 }
 .header-actions .user-name {
   color: var(--text-muted);
   font-size: 0.9rem;
   font-weight: 500;
+  white-space: nowrap;
 }
 .btn {
   display: inline-flex;
@@ -159,23 +173,24 @@ body {
 .main {
   flex: 1;
   width: 100%;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 1.5rem 3rem;
+  padding: 0 0 3rem;
+}
+.main .container {
+  padding-bottom: 0;
 }
 
-/* ===== BANNER HERO (Home) ===== */
+/* ===== BANNER HERO (Home) - largura total, conteúdo centralizado ===== */
 .hero-banner {
   position: relative;
   width: 100%;
   min-height: 420px;
-  margin: 0 -1.5rem 3rem;
   padding: 4rem 1.5rem;
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
   overflow: hidden;
-  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  margin-bottom: 3rem;
 }
 .hero-banner::before {
   content: '';
@@ -200,6 +215,8 @@ body {
   position: relative;
   z-index: 1;
   max-width: 640px;
+  width: 100%;
+  margin: 0 auto;
 }
 .hero-badge {
   display: inline-block;
@@ -246,9 +263,16 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* ===== Seção em grid (features) ===== */
+/* ===== Seção em grid (features) - alinhada ao container ===== */
 .section {
   padding: 2.5rem 0;
+  width: 100%;
+}
+.section .container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
 }
 .section-title-wrap {
   display: flex;
@@ -268,6 +292,7 @@ body {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
+  width: 100%;
 }
 @media (max-width: 900px) {
   .features-grid { grid-template-columns: 1fr; }
@@ -654,13 +679,21 @@ body {
 .text-center { text-align: center; }
 .mt-6 { margin-top: 1.5rem; }
 
+@media (max-width: 768px) {
+  .header-inner {
+    flex-wrap: wrap;
+    padding: 0.75rem 1rem;
+    gap: 0.75rem;
+  }
+  .site-nav { order: 3; width: 100%; justify-content: flex-start; }
+  .site-nav a { padding: 0.4rem 0.75rem; }
+}
 @media (max-width: 640px) {
-  .header-inner { grid-template-columns: 1fr; padding: 0.75rem 1rem; }
-  .site-nav { order: 3; grid-column: 1; justify-content: flex-start; }
   .hero-banner { min-height: 360px; padding: 3rem 1rem; margin-bottom: 2rem; }
   .hero-actions { flex-direction: column; width: 100%; max-width: 280px; margin: 0 auto; }
   .hero-actions .btn { width: 100%; }
-  .main { padding: 0 1rem 2rem; }
+  .section .container { padding: 0 1rem; }
+  .main .container { padding: 0 1rem; }
   .form-card { padding: 1.75rem; }
   .projects-grid { grid-template-columns: 1fr; }
 }

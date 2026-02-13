@@ -1,5 +1,5 @@
 <%- include('partials/header') %>
-  <!-- Banner Hero -->
+  <!-- Banner Hero - largura total, conteúdo centralizado -->
   <section class="hero-banner">
     <div class="hero-content">
       <span class="hero-badge">Plataforma de freelas</span>
@@ -17,55 +17,58 @@
     </div>
   </section>
 
-  <!-- Features em grid -->
-  <section class="section">
-    <div class="section-title-wrap">
-      <h2>Como funciona</h2>
-    </div>
-    <div class="features-grid">
-      <div class="feature-card">
-        <div class="feature-icon">📋</div>
-        <h3>Publique projetos</h3>
-        <p>Descreva o que precisa e receba propostas de freelancers qualificados.</p>
+  <!-- Conteúdo alinhado em container único -->
+  <div class="container">
+    <!-- Features em grid de 3 colunas -->
+    <section class="section">
+      <div class="section-title-wrap">
+        <h2>Como funciona</h2>
       </div>
-      <div class="feature-card">
-        <div class="feature-icon">💼</div>
-        <h3>Encontre trabalhos</h3>
-        <p>Navegue por projetos abertos e envie sua proposta com valor e prazo.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">🤝</div>
-        <h3>Simples e direto</h3>
-        <p>Sem complicação: cadastro rápido, projetos claros e comunicação objetiva.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Projetos em destaque (grid) -->
-  <section class="section">
-    <div class="section-title-wrap">
-      <h2>Projetos em destaque</h2>
-      <% if (featuredProjects && featuredProjects.length) { %>
-      <a href="/projetos" class="btn btn-ghost">Ver todos</a>
-      <% } %>
-    </div>
-    <% if (featuredProjects && featuredProjects.length) { %>
-    <div class="projects-grid">
-      <% featuredProjects.forEach(function(p) { %>
-      <a href="/projetos/<%= p.id %>" class="project-card">
-        <h3><%= p.title %></h3>
-        <p class="excerpt"><%= (p.description || '').substring(0, 120) %>...</p>
-        <div class="project-card-meta">
-          <span class="tag"><%= p.category %></span>
-          <span class="price">R$ <%= Number(p.budget).toLocaleString('pt-BR') %></span>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">📋</div>
+          <h3>Publique projetos</h3>
+          <p>Descreva o que precisa e receba propostas de freelancers qualificados.</p>
         </div>
-        <small>Por <%= p.client_name %></small>
-      </a>
-      <% }); %>
-    </div>
-    <p class="text-center mt-6"><a href="/projetos">Ver todos os projetos</a></p>
-    <% } else { %>
-    <p>Nenhum projeto em destaque no momento. <a href="/projetos">Ver projetos</a> ou <a href="/projetos/publicar">publicar o primeiro</a>.</p>
-    <% } %>
-  </section>
+        <div class="feature-card">
+          <div class="feature-icon">💼</div>
+          <h3>Encontre trabalhos</h3>
+          <p>Navegue por projetos abertos e envie sua proposta com valor e prazo.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🤝</div>
+          <h3>Simples e direto</h3>
+          <p>Sem complicação: cadastro rápido, projetos claros e comunicação objetiva.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Projetos em destaque (grid) -->
+    <section class="section">
+      <div class="section-title-wrap">
+        <h2>Projetos em destaque</h2>
+        <% if (featuredProjects && featuredProjects.length) { %>
+        <a href="/projetos" class="btn btn-ghost">Ver todos</a>
+        <% } %>
+      </div>
+      <% if (featuredProjects && featuredProjects.length) { %>
+      <div class="projects-grid">
+        <% featuredProjects.forEach(function(p) { %>
+        <a href="/projetos/<%= p.id %>" class="project-card">
+          <h3><%= p.title %></h3>
+          <p class="excerpt"><%= (p.description || '').substring(0, 120) %>...</p>
+          <div class="project-card-meta">
+            <span class="tag"><%= p.category %></span>
+            <span class="price">R$ <%= Number(p.budget).toLocaleString('pt-BR') %></span>
+          </div>
+          <small>Por <%= p.client_name %></small>
+        </a>
+        <% }); %>
+      </div>
+      <p class="text-center mt-6"><a href="/projetos">Ver todos os projetos</a></p>
+      <% } else { %>
+      <p>Nenhum projeto em destaque no momento. <a href="/projetos">Ver projetos</a> ou <a href="/projetos/publicar">publicar o primeiro</a>.</p>
+      <% } %>
+    </section>
+  </div>
 <%- include('partials/footer') %>
