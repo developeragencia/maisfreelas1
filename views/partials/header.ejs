@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= typeof title !== 'undefined' ? title : 'MaisFreelas' %></title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header class="header">
+    <a href="/" class="logo">MaisFreelas</a>
+    <nav>
+      <a href="/projetos">Projetos</a>
+      <% if (user) { %>
+        <a href="/dashboard">Dashboard</a>
+        <span><%= user.name %></span>
+        <form action="/logout" method="post" style="display:inline">
+          <button type="submit">Sair</button>
+        </form>
+      <% } else { %>
+        <a href="/login">Entrar</a>
+        <a href="/cadastro" class="btn">Cadastrar</a>
+      <% } %>
+    </nav>
+  </header>
+  <main class="main">

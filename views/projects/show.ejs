@@ -1,0 +1,30 @@
+<%- include('../partials/header') %>
+  <section class="section">
+    <h1><%= project.title %></h1>
+    <p><strong>Categoria:</strong> <%= project.category %> | <strong>Orçamento:</strong> R$ <%= project.budget %></p>
+    <p>Publicado por <%= project.client_name %></p>
+    <p><%= project.description %></p>
+    <% if (canPropose && user) { %>
+    <hr>
+    <h2>Enviar proposta</h2>
+    <form action="/projetos/<%= project.id %>/proposta" method="post" class="form">
+      <label>Carta de apresentação <textarea name="cover_letter" required rows="4"></textarea></label>
+      <label>Valor (R$) <input type="number" name="amount" step="0.01" required></label>
+      <label>Prazo (dias) <input type="number" name="delivery_time" required min="1"></label>
+      <button type="submit" class="btn">Enviar proposta</button>
+    </form>
+    <% } %>
+    <hr>
+    <h2>Propostas (<%= proposals.length %>)</h2>
+    <% if (proposals && proposals.length) { %>
+    <ul class="list">
+      <% proposals.forEach(function(pr) { %>
+      <li><strong><%= pr.freelancer_name %></strong> - R$ <%= pr.amount %> - <%= pr.delivery_time %> dias - <%= pr.status %><br><%= pr.cover_letter %></li>
+      <% }); %>
+    </ul>
+    <% } else { %>
+    <p>Nenhuma proposta ainda.</p>
+    <% } %>
+    <p><a href="/projetos">Voltar aos projetos</a></p>
+  </section>
+<%- include('../partials/footer') %>

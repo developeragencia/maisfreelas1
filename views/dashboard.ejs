@@ -1,0 +1,25 @@
+<%- include('partials/header') %>
+  <section class="section">
+    <h1>Dashboard - <%= user.name %></h1>
+    <h2>Meus projetos</h2>
+    <% if (myProjects && myProjects.length) { %>
+    <ul class="list">
+      <% myProjects.forEach(function(p) { %>
+      <li><a href="/projetos/<%= p.id %>"><%= p.title %></a> - <%= p.status %></li>
+      <% }); %>
+    </ul>
+    <% } else { %>
+    <p>Nenhum projeto publicado. <a href="/projetos/publicar">Publicar projeto</a></p>
+    <% } %>
+    <h2>Minhas propostas</h2>
+    <% if (myProposals && myProposals.length) { %>
+    <ul class="list">
+      <% myProposals.forEach(function(pr) { %>
+      <li><%= pr.project_title %> - R$ <%= pr.amount %> - <%= pr.status %></li>
+      <% }); %>
+    </ul>
+    <% } else { %>
+    <p>Nenhuma proposta enviada. <a href="/projetos">Ver projetos</a></p>
+    <% } %>
+  </section>
+<%- include('partials/footer') %>

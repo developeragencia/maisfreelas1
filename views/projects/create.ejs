@@ -1,0 +1,22 @@
+<%- include('../partials/header') %>
+  <section class="form-section">
+    <h1>Publicar projeto</h1>
+    <% if (error) { %><p class="error"><%= error %></p><% } %>
+    <form action="/projetos/publicar" method="post" class="form">
+      <label>Título <input type="text" name="title" required></label>
+      <label>Descrição <textarea name="description" required rows="5"></textarea></label>
+      <label>Categoria <input type="text" name="category" required></label>
+      <label>Habilidades (opcional) <input type="text" name="skills" placeholder="ex: Node, MySQL"></label>
+      <label>Nível
+        <select name="level">
+          <option value="beginner">Iniciante</option>
+          <option value="intermediate" selected>Intermediário</option>
+          <option value="expert">Expert</option>
+        </select>
+      </label>
+      <label>Orçamento (R$) <input type="number" name="budget" step="0.01" required></label>
+      <label>Prazo (opcional) <input type="date" name="deadline"></label>
+      <button type="submit" class="btn">Publicar</button>
+    </form>
+  </section>
+<%- include('../partials/footer') %>

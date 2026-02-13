@@ -1,0 +1,13 @@
+Variáveis para colar no Node.js App da Hostinger (Environment):
+
+PORT=3000
+NODE_ENV=production
+SESSION_SECRET=altere_uma_chave_secreta_longa_aqui
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_USER=u892594395_maisdenv3
+DB_PASSWORD=Conselhos954554
+DB_NAME=u892594395_maisfreelas2
+APP_URL=https://vemnoquiz.com.br
+
+Depois: no phpMyAdmin, selecione o banco u892594395_maisfreelas2 e importe database/schema.sql
