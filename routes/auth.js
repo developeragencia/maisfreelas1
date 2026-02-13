@@ -23,7 +23,13 @@ router.post('/login', requireGuest, async (req, res) => {
     req.session.userId = user.id;
     req.session.userName = user.name;
     req.session.userRole = user.role;
-    res.redirect('/dashboard');
+    req.session.save((err) => {
+      if (err) {
+        console.error('Session save:', err.message);
+        return res.render('login', { error: 'Erro ao entrar. Tente de novo.' });
+      }
+      res.redirect('/dashboard');
+    });
   } catch (e) {
     console.error('Login:', e.message);
     res.render('login', { error: 'Erro ao entrar. Tente de novo.' });

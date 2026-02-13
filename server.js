@@ -64,7 +64,10 @@ app.use('/dashboard', dashboardRoutes);
 
 app.use((req, res, next) => {
   res.status(404);
-  res.render('404', (err) => (err ? next(err) : null));
+  res.render('404', (err, html) => {
+    if (err) return next(err);
+    res.send(html);
+  });
 });
 
 app.use((err, req, res, next) => {

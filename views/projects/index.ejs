@@ -1,21 +1,25 @@
 <%- include('../partials/header') %>
   <section class="section">
-    <h1>Projetos abertos</h1>
-    <% if (user) { %><p><a href="/projetos/publicar" class="btn">Publicar projeto</a></p><% } %>
+    <div class="section-head">
+      <h1>Projetos abertos</h1>
+      <% if (user) { %><a href="/projetos/publicar" class="btn">Publicar projeto</a><% } %>
+    </div>
     <% if (projects && projects.length) { %>
     <div class="card-grid">
       <% projects.forEach(function(p) { %>
       <a href="/projetos/<%= p.id %>" class="card">
         <h3><%= p.title %></h3>
         <p><%= (p.description || '').substring(0, 120) %>...</p>
-        <span class="badge"><%= p.category %></span>
-        <span class="budget">R$ <%= p.budget %></span>
+        <div class="card-meta">
+          <span class="badge"><%= p.category %></span>
+          <span class="budget">R$ <%= Number(p.budget).toLocaleString('pt-BR') %></span>
+        </div>
         <small>Por <%= p.client_name %></small>
       </a>
       <% }); %>
     </div>
     <% } else { %>
-    <p>Nenhum projeto aberto no momento.</p>
+    <p>Nenhum projeto aberto no momento. <% if (user) { %><a href="/projetos/publicar">Seja o primeiro a publicar</a>.<% } %></p>
     <% } %>
   </section>
 <%- include('../partials/footer') %>

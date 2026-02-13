@@ -1,29 +1,62 @@
 <%- include('partials/header') %>
   <section class="hero">
+    <span class="hero-badge">Plataforma de freelas</span>
     <h1>Conecte projetos e freelancers</h1>
-    <p>Publique projetos ou encontre trabalho. Simples e direto.</p>
-    <% if (!user) { %>
-      <a href="/cadastro" class="btn btn-large">Criar conta</a>
-      <a href="/projetos" class="btn btn-outline">Ver projetos</a>
-    <% } else { %>
-      <a href="/projetos" class="btn btn-large">Ver projetos</a>
-      <a href="/projetos/publicar" class="btn btn-outline">Publicar projeto</a>
-    <% } %>
+    <p class="hero-desc">Publique seus projetos ou encontre trabalho. Simples, seguro e direto ao ponto.</p>
+    <div class="hero-actions">
+      <% if (!user) { %>
+        <a href="/cadastro" class="btn btn-large">Criar conta</a>
+        <a href="/projetos" class="btn btn-outline btn-large">Ver projetos</a>
+      <% } else { %>
+        <a href="/projetos" class="btn btn-large">Ver projetos</a>
+        <a href="/projetos/publicar" class="btn btn-outline btn-large">Publicar projeto</a>
+      <% } %>
+    </div>
   </section>
+
+  <section class="features">
+    <div class="feature-card">
+      <div class="feature-icon">📋</div>
+      <h3>Publique projetos</h3>
+      <p>Descreva o que precisa e receba propostas de freelancers qualificados.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">💼</div>
+      <h3>Encontre trabalhos</h3>
+      <p>Navegue por projetos abertos e envie sua proposta com valor e prazo.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🤝</div>
+      <h3>Simples e direto</h3>
+      <p>Sem complicação: cadastro rápido, projetos claros e comunicação objetiva.</p>
+    </div>
+  </section>
+
   <% if (featuredProjects && featuredProjects.length) { %>
   <section class="section">
-    <h2>Projetos em destaque</h2>
+    <div class="section-head">
+      <h1>Projetos em destaque</h1>
+      <a href="/projetos" class="btn btn-secondary">Ver todos</a>
+    </div>
     <div class="card-grid">
       <% featuredProjects.forEach(function(p) { %>
       <a href="/projetos/<%= p.id %>" class="card">
         <h3><%= p.title %></h3>
-        <p><%= (p.description || '').substring(0, 100) %>...</p>
-        <span class="badge"><%= p.category %></span>
-        <span class="budget">R$ <%= p.budget %></span>
+        <p><%= (p.description || '').substring(0, 120) %>...</p>
+        <div class="card-meta">
+          <span class="badge"><%= p.category %></span>
+          <span class="budget">R$ <%= Number(p.budget).toLocaleString('pt-BR') %></span>
+        </div>
+        <small>Por <%= p.client_name %></small>
       </a>
       <% }); %>
     </div>
-    <p><a href="/projetos">Ver todos os projetos</a></p>
+    <p class="mt-2 text-center"><a href="/projetos">Ver todos os projetos</a></p>
+  </section>
+  <% } else { %>
+  <section class="section">
+    <h1>Projetos em destaque</h1>
+    <p>Nenhum projeto em destaque no momento. <a href="/projetos">Ver projetos</a> ou <a href="/projetos/publicar">publicar o primeiro</a>.</p>
   </section>
   <% } %>
 <%- include('partials/footer') %>

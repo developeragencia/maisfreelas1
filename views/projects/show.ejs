@@ -1,30 +1,44 @@
 <%- include('../partials/header') %>
-  <section class="section">
+  <section class="section project-detail">
+    <a href="/projetos" class="back-link">← Voltar aos projetos</a>
     <h1><%= project.title %></h1>
-    <p><strong>Categoria:</strong> <%= project.category %> | <strong>Orçamento:</strong> R$ <%= project.budget %></p>
-    <p>Publicado por <%= project.client_name %></p>
-    <p><%= project.description %></p>
+    <div class="project-meta-inline">
+      <span><strong>Categoria:</strong> <%= project.category %></span>
+      <span><strong>Orçamento:</strong> R$ <%= Number(project.budget).toLocaleString('pt-BR') %></span>
+      <span>Publicado por <strong><%= project.client_name %></strong></span>
+    </div>
+    <div class="description"><%= project.description %></div>
+
     <% if (canPropose && user) { %>
-    <hr>
-    <h2>Enviar proposta</h2>
-    <form action="/projetos/<%= project.id %>/proposta" method="post" class="form">
-      <label>Carta de apresentação <textarea name="cover_letter" required rows="4"></textarea></label>
-      <label>Valor (R$) <input type="number" name="amount" step="0.01" required></label>
-      <label>Prazo (dias) <input type="number" name="delivery_time" required min="1"></label>
-      <button type="submit" class="btn">Enviar proposta</button>
-    </form>
+    <div class="proposal-form-box">
+      <h2>Enviar proposta</h2>
+      <form action="/projetos/<%= project.id %>/proposta" method="post" class="form">
+        <label>Carta de apresentação
+          <textarea name="cover_letter" required rows="4" placeholder="Apresente-se e explique por que você é a melhor escolha."></textarea>
+        </label>
+        <label>Valor (R$)
+          <input type="number" name="amount" step="0.01" required placeholder="0.00">
+        </label>
+        <label>Prazo (dias)
+          <input type="number" name="delivery_time" required min="1" placeholder="Ex: 7">
+        </label>
+        <button type="submit" class="btn">Enviar proposta</button>
+      </form>
+    </div>
     <% } %>
-    <hr>
-    <h2>Propostas (<%= proposals.length %>)</h2>
-    <% if (proposals && proposals.length) { %>
-    <ul class="list">
+
+    <div class="proposals-list">
+      <h2>Propostas (<%= proposals.length %>)</h2>
+      <% if (proposals && proposals.length) { %>
       <% proposals.forEach(function(pr) { %>
-      <li><strong><%= pr.freelancer_name %></strong> - R$ <%= pr.amount %> - <%= pr.delivery_time %> dias - <%= pr.status %><br><%= pr.cover_letter %></li>
+      <div class="proposal-item">
+        <strong><%= pr.freelancer_name %></strong> — R$ <%= Number(pr.amount).toLocaleString('pt-BR') %> — <%= pr.delivery_time %> dias — <%= pr.status %>
+        <div class="cover"><%= pr.cover_letter %></div>
+      </div>
       <% }); %>
-    </ul>
-    <% } else { %>
-    <p>Nenhuma proposta ainda.</p>
-    <% } %>
-    <p><a href="/projetos">Voltar aos projetos</a></p>
+      <% } else { %>
+      <p>Nenhuma proposta ainda.</p>
+      <% } %>
+    </div>
   </section>
 <%- include('../partials/footer') %>
