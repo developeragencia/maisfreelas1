@@ -45,6 +45,8 @@ app.get('/health-db', async (req, res) => {
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.set('trust proxy', 1);
+// Quebra de cache: a cada reinício do servidor o navegador busca CSS/JS de novo
+app.locals.assetVersion = Date.now();
 
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
