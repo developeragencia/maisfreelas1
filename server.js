@@ -128,5 +128,6 @@ ensureDatabase()
   })
   .catch((e) => {
     console.error('[DB] Inicialização automática do banco falhou:', e.message);
+    console.error('[DB] Verifique .env: DB_HOST, DB_USER, DB_PASSWORD, DB_NAME e se o MySQL está rodando.');
     startServer();
   });

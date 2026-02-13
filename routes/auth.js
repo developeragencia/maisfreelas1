@@ -59,8 +59,9 @@ router.post('/cadastro', requireGuest, async (req, res) => {
     await db.query('INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)', [nome, emailTrim, hash, roleVal]);
     res.redirect('/login');
   } catch (e) {
-    console.error('Cadastro:', e.code || e.message);
+    console.error('Cadastro:', e.code || e.message, e.sqlMessage || '');
     if (e.code === 'ER_DUP_ENTRY') return res.render('register', { error: 'Este e-mail já está cadastrado.' });
+    if (e.code === 'ER_NO_SUCH_TABLE') console.error('Tabelas não existem. Reinicie o servidor para criar automaticamente.');
     return res.render('register', { error: 'Estamos com um problema temporário. Tente novamente em alguns minutos.' });
   }
 });
