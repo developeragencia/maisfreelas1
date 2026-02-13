@@ -7,14 +7,26 @@ const router = express.Router();
 
 router.get('/', async (req, res) => {
   try {
-    const [rows] = await db.query(
-      `SELECT p.*, u.name as client_name FROM projects p
+    const category = typeof req.query.categoria === 'string' ? req.query.categoria.trim() : '';
+    let sql = `SELECT p.*, u.name as client_name FROM projects p
        JOIN users u ON p.client_id = u.id
-       WHERE p.status = 'open' ORDER BY p.created_at DESC`
-    );
-    res.render('projects/index', { projects: rows || [], user: res.locals.user });
+       WHERE p.status = 'open'`;
+    const params = [];
+    if (category) {
+      sql += ' AND p.category = ?';
+      params.push(category);
+    }
+    sql += ' ORDER BY p.created_at DESC';
+    const [rows] = await db.query(sql, params);
+    const [cats] = await db.query('SELECT DISTINCT category FROM projects WHERE status = ? ORDER BY category', ['open']);
+    res.render('projects/index', {
+      projects: rows || [],
+      categories: (cats || []).map(c => c.category),
+      currentCategory: category || null,
+      user: res.locals.user,
+    });
   } catch (e) {
-    res.render('projects/index', { projects: [], user: null });
+    res.render('projects/index', { projects: [], categories: [], currentCategory: null, user: null });
   }
 });
 
@@ -62,6 +74,33 @@ router.post('/:id/proposta/:proposalId/rejeitar', requireAuth, async (req, res) 
     const [projects] = await db.query('SELECT id, client_id FROM projects WHERE id = ?', [projectId]);
     if (!projects?.length || projects[0].client_id !== req.session.userId) return res.redirect('/projetos');
     await db.query('UPDATE proposals SET status = ? WHERE id = ? AND project_id = ?', ['rejected', proposalId, projectId]);
+    res.redirect('/projetos/' + projectId);
+  } catch (e) {
+    res.redirect('/projetos/' + projectId);
+  }
+});
+
+router.post('/:id/concluir', requireAuth, async (req, res) => {
+  const projectId = parseInt(req.params.id, 10);
+  if (!projectId) return res.redirect('/projetos');
+  try {
+    const [projects] = await db.query('SELECT id, client_id, status FROM projects WHERE id = ?', [projectId]);
+    if (!projects?.length || projects[0].client_id !== req.session.userId || projects[0].status !== 'in_progress') return res.redirect('/projetos/' + projectId);
+    await db.query('UPDATE projects SET status = ? WHERE id = ?', ['completed', projectId]);
+    res.redirect('/projetos/' + projectId);
+  } catch (e) {
+    res.redirect('/projetos/' + projectId);
+  }
+});
+
+router.post('/:id/cancelar', requireAuth, async (req, res) => {
+  const projectId = parseInt(req.params.id, 10);
+  if (!projectId) return res.redirect('/projetos');
+  try {
+    const [projects] = await db.query('SELECT id, client_id, status FROM projects WHERE id = ?', [projectId]);
+    if (!projects?.length || projects[0].client_id !== req.session.userId) return res.redirect('/projetos/' + projectId);
+    if (projects[0].status !== 'open' && projects[0].status !== 'in_progress') return res.redirect('/projetos/' + projectId);
+    await db.query('UPDATE projects SET status = ? WHERE id = ?', ['cancelled', projectId]);
     res.redirect('/projetos/' + projectId);
   } catch (e) {
     res.redirect('/projetos/' + projectId);

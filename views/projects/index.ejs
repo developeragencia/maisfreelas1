@@ -5,6 +5,15 @@
       <h1>Projetos abertos</h1>
       <% if (user) { %><a href="/projetos/publicar" class="btn btn-primary">Publicar projeto</a><% } %>
     </div>
+    <% if (categories && categories.length) { %>
+    <div class="filter-bar">
+      <span class="filter-label">Categoria:</span>
+      <a href="/projetos" class="filter-chip <%= !currentCategory ? 'active' : '' %>">Todas</a>
+      <% categories.forEach(function(cat) { %>
+      <a href="/projetos?categoria=<%= encodeURIComponent(cat) %>" class="filter-chip <%= currentCategory === cat ? 'active' : '' %>"><%= cat %></a>
+      <% }); %>
+    </div>
+    <% } %>
     <% if (projects && projects.length) { %>
     <div class="projects-grid">
       <% projects.forEach(function(p) { %>

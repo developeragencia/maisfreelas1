@@ -1,4 +1,19 @@
 <%- include('partials/header') %>
+<% 
+  function statusProjeto(s) {
+    if (s === 'open') return 'Aberto';
+    if (s === 'in_progress') return 'Em andamento';
+    if (s === 'completed') return 'Concluído';
+    if (s === 'cancelled') return 'Cancelado';
+    return s;
+  }
+  function statusProposta(s) {
+    if (s === 'pending') return 'Pendente';
+    if (s === 'accepted') return 'Aceita';
+    if (s === 'rejected') return 'Rejeitada';
+    return s;
+  }
+%>
   <div class="container">
   <div class="dashboard-wrap">
     <div class="dashboard-welcome">
@@ -14,7 +29,7 @@
           <% myProjects.forEach(function(p) { %>
           <li>
             <a href="/projetos/<%= p.id %>"><%= p.title %></a>
-            <div class="meta">Status: <%= p.status %> — R$ <%= Number(p.budget).toLocaleString('pt-BR') %></div>
+            <div class="meta">Status: <%= statusProjeto(p.status) %> — R$ <%= Number(p.budget).toLocaleString('pt-BR') %></div>
           </li>
           <% }); %>
         </ul>
@@ -33,7 +48,7 @@
           <% myProposals.forEach(function(pr) { %>
           <li>
             <a href="/projetos/<%= pr.project_id %>"><%= pr.project_title %></a>
-            <div class="meta">R$ <%= Number(pr.amount).toLocaleString('pt-BR') %> — <%= pr.delivery_time %> dias — Status: <%= pr.status %></div>
+            <div class="meta">R$ <%= Number(pr.amount).toLocaleString('pt-BR') %> — <%= pr.delivery_time %> dias — Status: <%= statusProposta(pr.status) %></div>
           </li>
           <% }); %>
         </ul>

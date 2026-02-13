@@ -9,6 +9,18 @@
       <span><strong>Status:</strong> <%= project.status === 'open' ? 'Aberto' : project.status === 'in_progress' ? 'Em andamento' : project.status === 'completed' ? 'Concluído' : 'Cancelado' %></span>
       <span>Publicado por <strong><%= project.client_name %></strong></span>
     </div>
+    <% if (isOwner && (project.status === 'open' || project.status === 'in_progress')) { %>
+    <div class="project-owner-actions">
+      <% if (project.status === 'in_progress') { %>
+      <form action="/projetos/<%= project.id %>/concluir" method="post" style="display:inline">
+        <button type="submit" class="btn btn-primary">Concluir projeto</button>
+      </form>
+      <% } %>
+      <form action="/projetos/<%= project.id %>/cancelar" method="post" style="display:inline">
+        <button type="submit" class="btn btn-ghost">Cancelar projeto</button>
+      </form>
+    </div>
+    <% } %>
     <div class="project-description"><%= project.description %></div>
 
     <% if (canPropose && user) { %>

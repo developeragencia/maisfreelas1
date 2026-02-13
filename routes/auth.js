@@ -7,29 +7,38 @@ const { requireGuest } = require('../middleware/auth');
 const router = express.Router();
 const ROLES = ['client', 'freelancer', 'both'];
 
+function safeRedirect(path) {
+  if (!path || typeof path !== 'string') return '/dashboard';
+  const p = path.trim();
+  if (p.startsWith('/') && !p.startsWith('//')) return p;
+  return '/dashboard';
+}
+
 router.get('/login', requireGuest, (req, res) => {
-  res.render('login', { error: null });
+  const redirect = req.query.redirect ? safeRedirect(req.query.redirect) : null;
+  res.render('login', { error: null, redirect });
 });
 
 router.post('/login', requireGuest, async (req, res) => {
   const email = (req.body && req.body.email) ? String(req.body.email).trim() : '';
   const password = req.body && req.body.password ? String(req.body.password) : '';
-  if (!email || !password) return res.render('login', { error: 'Preencha e-mail e senha.' });
+  if (!email || !password) return res.render('login', { error: 'Preencha e-mail e senha.', redirect: req.body.redirect || req.query.redirect ? safeRedirect(req.body.redirect || req.query.redirect) : null });
   try {
     const [rows] = await db.query('SELECT id, name, email, password, role FROM users WHERE email = ?', [email]);
-    if (!rows || !rows.length) return res.render('login', { error: 'E-mail ou senha incorretos.' });
+    if (!rows || !rows.length) return res.render('login', { error: 'E-mail ou senha incorretos.', redirect: req.query.redirect ? safeRedirect(req.query.redirect) : null });
     const user = rows[0];
     const ok = await bcrypt.compare(password, user.password || '');
-    if (!ok) return res.render('login', { error: 'E-mail ou senha incorretos.' });
+    if (!ok) return res.render('login', { error: 'E-mail ou senha incorretos.', redirect: req.query.redirect ? safeRedirect(req.query.redirect) : null });
     req.session.userId = user.id;
     req.session.userName = user.name;
     req.session.userRole = user.role;
     req.session.save((err) => {
       if (err) {
         console.error('Session save:', err.message);
-        return res.render('login', { error: 'Erro ao entrar. Tente de novo.' });
+        return res.render('login', { error: 'Erro ao entrar. Tente de novo.', redirect: null });
       }
-      res.redirect(302, '/dashboard');
+      const goTo = safeRedirect(req.body.redirect || req.query.redirect);
+      res.redirect(302, goTo);
     });
   } catch (e) {
     console.error('Login:', e.message);
