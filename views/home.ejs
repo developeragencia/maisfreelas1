@@ -1,5 +1,5 @@
 <%- include('partials/header') %>
-  <!-- Banner Hero - largura total, conteúdo centralizado -->
+  <!-- Banner Hero -->
   <section class="hero-banner">
     <div class="hero-content">
       <span class="hero-badge">Plataforma de freelas</span>
@@ -17,9 +17,8 @@
     </div>
   </section>
 
-  <!-- Conteúdo alinhado em container único -->
   <div class="container">
-    <!-- Features em grid de 3 colunas -->
+    <!-- Como funciona -->
     <section class="section">
       <div class="section-title-wrap">
         <h2>Como funciona</h2>
@@ -43,7 +42,28 @@
       </div>
     </section>
 
-    <!-- Projetos em destaque (grid) -->
+    <!-- Por que usar -->
+    <section class="section">
+      <div class="section-title-wrap">
+        <h2>Por que o MaisFreelas</h2>
+      </div>
+      <div class="why-grid">
+        <div class="why-card">
+          <div class="num">Simples</div>
+          <p>Cadastro rápido e interface objetiva para publicar ou encontrar projetos.</p>
+        </div>
+        <div class="why-card">
+          <div class="num">Seguro</div>
+          <p>Propostas organizadas por projeto e comunicação direta entre as partes.</p>
+        </div>
+        <div class="why-card">
+          <div class="num">Prático</div>
+          <p>Dashboard para acompanhar seus projetos e propostas em um só lugar.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Projetos em destaque -->
     <section class="section">
       <div class="section-title-wrap">
         <h2>Projetos em destaque</h2>
@@ -68,6 +88,17 @@
       <p class="text-center mt-6"><a href="/projetos">Ver todos os projetos</a></p>
       <% } else { %>
       <p>Nenhum projeto em destaque no momento. <a href="/projetos">Ver projetos</a> ou <a href="/projetos/publicar">publicar o primeiro</a>.</p>
+      <% } %>
+    </section>
+
+    <!-- CTA final -->
+    <section class="cta-section">
+      <h2>Pronto para começar?</h2>
+      <p>Cadastre-se gratuitamente e publique seu primeiro projeto ou envie uma proposta.</p>
+      <% if (!user) { %>
+        <a href="/cadastro" class="btn btn-primary btn-large">Criar conta grátis</a>
+      <% } else { %>
+        <a href="/projetos/publicar" class="btn btn-primary btn-large">Publicar projeto</a>
       <% } %>
     </section>
   </div>

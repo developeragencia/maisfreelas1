@@ -9,10 +9,10 @@
   --border: #2e2e3a;
   --text: #f0f0f5;
   --text-muted: #9090a0;
-  --accent: #6366f1;
-  --accent-hover: #818cf8;
-  --accent-glow: rgba(99, 102, 241, 0.4);
-  --accent-soft: rgba(99, 102, 241, 0.12);
+  --accent: #f59e0b;
+  --accent-hover: #fbbf24;
+  --accent-glow: rgba(245, 158, 11, 0.4);
+  --accent-soft: rgba(245, 158, 11, 0.15);
   --success: #22c55e;
   --error: #ef4444;
   --radius: 16px;
@@ -128,8 +128,8 @@ body {
   transition: all var(--transition);
 }
 .btn-primary {
-  background: linear-gradient(135deg, var(--accent), #4f46e5);
-  color: #fff;
+  background: linear-gradient(135deg, var(--accent), #d97706);
+  color: #0c0c10;
   box-shadow: 0 4px 14px var(--accent-glow);
 }
 .btn-primary:hover {
@@ -196,7 +196,7 @@ body {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, #1e1b4b 0%, #0f0f14 40%, #0c0c10 100%);
+  background: linear-gradient(135deg, #1c1912 0%, #0f0f14 40%, #0c0c10 100%);
   z-index: 0;
 }
 .hero-banner::after {
@@ -314,7 +314,7 @@ body {
   width: 56px;
   height: 56px;
   margin: 0 auto 1.25rem;
-  background: linear-gradient(135deg, var(--accent-soft), rgba(99, 102, 241, 0.08));
+  background: linear-gradient(135deg, var(--accent-soft), rgba(245, 158, 11, 0.08));
   border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
@@ -646,16 +646,129 @@ body {
 }
 .page-404 .btn { margin: 0; }
 
-/* ===== Footer ===== */
+/* ===== Seção CTA (chamada para ação) ===== */
+.cta-section {
+  padding: 3rem 1.5rem;
+  text-align: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin: 2rem 0;
+}
+.cta-section h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+  letter-spacing: -0.02em;
+}
+.cta-section p {
+  color: var(--text-muted);
+  margin: 0 0 1.5rem;
+  font-size: 1rem;
+}
+.cta-section .btn { margin: 0; }
+
+/* ===== Seção Por que / Estatísticas ===== */
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  width: 100%;
+}
+@media (max-width: 768px) {
+  .why-grid { grid-template-columns: 1fr; }
+}
+.why-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  text-align: center;
+  transition: border-color var(--transition), transform var(--transition);
+}
+.why-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+.why-card .num {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1.2;
+  margin-bottom: 0.25rem;
+}
+.why-card p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+/* ===== Footer completo ===== */
 .site-footer {
   margin-top: auto;
-  padding: 1.75rem 1.5rem;
+  width: 100%;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+  padding: 0;
+}
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 2rem;
+  align-items: start;
+  margin-bottom: 2rem;
+}
+@media (max-width: 640px) {
+  .footer-grid { grid-template-columns: 1fr; text-align: center; }
+  .footer-links { justify-content: center; }
+}
+.footer-brand {
+  font-weight: 800;
+  font-size: 1.25rem;
+  color: var(--text);
+  text-decoration: none;
+  letter-spacing: -0.02em;
+}
+.footer-brand:hover { color: var(--accent); }
+.footer-brand-desc {
+  margin: 0.5rem 0 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  max-width: 260px;
+}
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.footer-links span {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.25rem;
+}
+.footer-links a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: color var(--transition);
+}
+.footer-links a:hover { color: var(--accent); }
+.footer-bottom {
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
   text-align: center;
   color: var(--text-muted);
   font-size: 0.9rem;
-  border-top: 1px solid var(--border);
 }
-.site-footer p { margin: 0; }
+.footer-bottom p { margin: 0; }
 
 /* ===== Lista de projetos (página /projetos) ===== */
 .page-head {
