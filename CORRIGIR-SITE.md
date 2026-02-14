@@ -12,11 +12,17 @@ Siga **na ordem**. Se pular um passo, o site continua fora.
 
 ---
 
-## 2. Comando de inicialização
+## 2. Build e comando de início (não confundir)
 
-No Node.js App, em **Configurações** / **Start command** / **Comando de início**:
+Na Hostinger existem **dois campos diferentes**. Se você colocar o comando de **início** no lugar do **build**, a implantação falha com "Falha na construção".
 
-- Deve estar **um** destes (exatamente):
+| Campo | Onde fica | O que colocar |
+|-------|-----------|----------------|
+| **Build command** / Comando de compilação | Configurações de build | **Só** `npm install` ou `npm install --production` |
+| **Start command** / Comando de início | Configurações do app | `npm start` **ou** `node server-bootstrap.js` |
+
+- **Build command:** deve **terminar** (só instala pacotes). **Não** coloque `npm start` aqui.
+- **Start command:** é o que **sobe o servidor**. Use **um** destes (exatamente):
   - `npm start`
   - ou `node server-bootstrap.js`
 
@@ -55,10 +61,11 @@ Adicione **uma por uma** (nome e valor):
 
 ## 5. Deploy e reinício
 
-- **Build command:** `npm install` ou `npm install --production`.
+- **Build command** (só este campo): `npm install` ou `npm install --production`. Deixe o **Start command** no outro campo (passo 2).
 - Clique em **Deploy** (ou **Redeploy**).
 - Depois do deploy, clique em **Reiniciar** / **Restart** no Node.js App.
 - Espere **1–2 minutos**.
+- **Se aparecer "Falha na construção":** confira se no **Build command** está só `npm install` (ou `npm install --production`). Se estiver `npm start` ou `node server-bootstrap.js` no build, mude para `npm install` e salve de novo.
 
 ---
 
@@ -87,4 +94,4 @@ Adicione **uma por uma** (nome e valor):
 
 ---
 
-**Resumo:** Comando certo (`npm start` ou `node server-bootstrap.js`) + variáveis de ambiente preenchidas + domínio conectado a este Node.js App + Deploy e Restart = site no ar.
+**Resumo:** Build = `npm install` | Início = `npm start` ou `node server-bootstrap.js` + variáveis de ambiente + domínio conectado a este Node.js App + Deploy e Restart = site no ar.
