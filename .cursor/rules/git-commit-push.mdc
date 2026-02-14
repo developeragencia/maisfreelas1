@@ -1,0 +1,16 @@
+---
+description: Após atualizar código no projeto, fazer commit e push automaticamente
+alwaysApply: true
+---
+
+# Git: commit e push após alterações
+
+Sempre que você modificar arquivos do repositório (código, docs, config), ao finalizar as alterações:
+
+1. **Adicionar** todas as mudanças: `git add -A`
+2. **Commitar** com mensagem clara em português (ex.: "fix: login em produção", "feat: nova página X")
+3. **Enviar** para o remoto: `git push origin main`
+
+Use PowerShell: `Set-Location "d:\MAISFREELAS\maisfreelas1"; git add -A; git commit -m "sua mensagem"; git push origin main`
+
+Não faça push se o usuário pedir explicitamente para não versionar ou só testar localmente.
