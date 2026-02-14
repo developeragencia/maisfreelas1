@@ -3,9 +3,13 @@
  * Cria o banco e as tabelas automaticamente se não existirem.
  * Usa schema-autocreate.sql (CREATE TABLE IF NOT EXISTS) para não apagar dados.
  */
+const path = require('path');
+try {
+  require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
+} catch (_) {}
+
 const mysql = require('mysql2/promise');
 const fs = require('fs');
-const path = require('path');
 
 async function ensureDatabase(config) {
   config = config || {};

@@ -66,7 +66,7 @@ router.get('/cadastro', requireGuest, (req, res) => {
   res.render('register', { error: null });
 });
 
-router.post('/cadastro', requireGuest, async (req, res) => {
+router.post('/cadastro', requireGuest, wrapAsync(async (req, res) => {
   const { name, email, password, role } = req.body || {};
   const nome = String(name || '').trim();
   const emailTrim = String(email || '').trim();
@@ -82,14 +82,17 @@ router.post('/cadastro', requireGuest, async (req, res) => {
   try {
     const hash = await bcrypt.hash(senha, 10);
     await db.query('INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)', [nome, emailTrim, hash, roleVal]);
-    res.redirect('/login');
+    return res.redirect(302, '/login');
   } catch (e) {
     console.error('Cadastro:', e.code || e.message, e.sqlMessage || '');
     if (e.code === 'ER_DUP_ENTRY') return res.render('register', { error: 'Este e-mail já está cadastrado.' });
-    if (e.code === 'ER_NO_SUCH_TABLE') console.error('Tabelas não existem. Reinicie o servidor para criar automaticamente.');
-    return res.render('register', { error: 'Estamos com um problema temporário. Tente novamente em alguns minutos.' });
+    if (e.code === 'ER_NO_SUCH_TABLE' || e.code === 'ER_BAD_DB_ERROR' || e.code === 'ECONNREFUSED' || e.code === 'ER_ACCESS_DENIED_ERROR') {
+      console.error('[DB] Cadastro falhou – banco inacessível. Confira .env e reinicie o app.');
+      return res.render('register', { error: 'Banco de dados indisponível. Verifique a configuração do servidor e tente em alguns minutos.' });
+    }
+    return res.render('register', { error: 'Não foi possível concluir o cadastro. Tente novamente em alguns minutos.' });
   }
-});
+}));
 
 router.post('/logout', (req, res) => {
   req.session.destroy(() => res.redirect('/'));

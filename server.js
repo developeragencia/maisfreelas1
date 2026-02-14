@@ -1,6 +1,7 @@
 'use strict';
-require('dotenv').config();
 const path = require('path');
+// Carrega .env pela pasta do app (evita falha em produção quando cwd é outro)
+require('dotenv').config({ path: path.join(__dirname, '.env') });
 const express = require('express');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
@@ -150,8 +151,13 @@ function startServer() {
 ensureDatabase()
   .then(() => {
     console.log('[DB] Banco e tabelas prontos (inicialização automática).');
-    startServer();
+    return db.query('SELECT 1 FROM users LIMIT 1').then(() => {
+      console.log('[DB] Tabela users acessível.');
+    }).catch((e) => {
+      console.error('[DB] Aviso: não foi possível acessar a tabela users:', e.message);
+    });
   })
+  .then(() => startServer())
   .catch((e) => {
     console.error('[DB] Inicialização automática do banco falhou:', e.message);
     console.error('[DB] Verifique .env: DB_HOST, DB_USER, DB_PASSWORD, DB_NAME e se o MySQL está rodando.');

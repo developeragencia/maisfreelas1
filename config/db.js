@@ -1,5 +1,10 @@
 'use strict';
-require('dotenv').config();
+const path = require('path');
+// Garante .env carregado mesmo se este módulo for o primeiro a rodar
+try {
+  require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
+} catch (_) {}
+
 const mysql = require('mysql2/promise');
 
 function getConfig() {
@@ -21,12 +26,17 @@ function getConfig() {
       console.error('[DB] DATABASE_URL inválida:', e.message);
     }
   }
+  const dbName = process.env.DB_NAME || '';
+  const dbUser = process.env.DB_USER || '';
+  if (!dbName || !dbUser) {
+    console.error('[DB] Defina DB_NAME e DB_USER no arquivo .env na raiz do projeto.');
+  }
   return {
     host: process.env.DB_HOST || '127.0.0.1',
     port: parseInt(process.env.DB_PORT || '3306', 10),
-    user: process.env.DB_USER || '',
+    user: dbUser,
     password: process.env.DB_PASSWORD || '',
-    database: process.env.DB_NAME || '',
+    database: dbName,
     waitForConnections: true,
     connectionLimit: 10,
     charset: 'utf8mb4',
@@ -39,11 +49,11 @@ try {
 } catch (e) {
   console.error('[DB] createPool:', e.message);
   pool = mysql.createPool({
-    host: '127.0.0.1',
-    port: 3306,
-    user: '',
-    password: '',
-    database: '',
+    host: process.env.DB_HOST || '127.0.0.1',
+    port: parseInt(process.env.DB_PORT || '3306', 10),
+    user: process.env.DB_USER || '',
+    password: process.env.DB_PASSWORD || '',
+    database: process.env.DB_NAME || '',
     waitForConnections: true,
     connectionLimit: 2,
     charset: 'utf8mb4',
