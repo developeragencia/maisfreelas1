@@ -1,13 +1,13 @@
-Variáveis para colar no Node.js App da Hostinger (Environment):
+Variáveis para colar no Node.js App da Hostinger (Environment / Variáveis de ambiente):
 
 PORT=3000
 NODE_ENV=production
-SESSION_SECRET=altere_uma_chave_secreta_longa_aqui
+SESSION_SECRET=6642002c892b6f08c6cf4fad58243a06a50e7a97853cd4c115e69412c6a070dc
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_USER=u892594395_maisdenv3
-DB_PASSWORD=Conselhos954554
-DB_NAME=u892594395_maisfreelas2
+DB_USER=u892594395_mausfreelas
+DB_PASSWORD=Conselhos950@#
+DB_NAME=u892594395_freelasmais
 APP_URL=https://vemnoquiz.com.br
 
-Depois: no phpMyAdmin, selecione o banco u892594395_maisfreelas2 e importe database/schema.sql
+Importante: o app cria o banco e as tabelas automaticamente ao subir (não é obrigatório importar schema.sql no phpMyAdmin). Depois do deploy, acesse https://vemnoquiz.com.br/health-db para conferir a conexão.

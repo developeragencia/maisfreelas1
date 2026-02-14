@@ -6,11 +6,11 @@ Marque cada item depois de fazer. Quando todos estiverem ok, o site aparece e fu
 
 ## Banco de dados
 
-- [ ] No painel Hostinger: **Bancos de dados** → **Gerenciamento** → clicou em **Criar** com:
-  - Banco: **u892594395_maisfreelas2**
-  - Usuário: **u892594395_maisdenv3**
-  - Senha: **Conselhos954554**
-- [ ] **phpMyAdmin** → selecionou o banco **u892594395_maisfreelas2** → **Importar** → enviou o arquivo **database/schema.sql** do projeto (cria as tabelas users, projects, proposals).
+- [ ] No painel Hostinger: **Bancos de dados** → **Gerenciamento** → criou banco e usuário:
+  - Banco: **u892594395_freelasmais**
+  - Usuário: **u892594395_mausfreelas**
+  - Senha: (a que você definiu no painel)
+- [ ] (Opcional) O app cria as tabelas automaticamente ao subir. Se quiser importar manualmente: **phpMyAdmin** → banco **u892594395_freelasmais** → **Importar** → **database/schema.sql**.
 
 ---
 

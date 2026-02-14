@@ -6,8 +6,8 @@ Criado no painel Hostinger (Bancos de dados → Gerenciamento).
 |------------|-------------------------|
 | **Host**   | 127.0.0.1               |
 | **Porta**  | 3306                    |
-| **Banco**  | u892594395_maisfreelas2 |
-| **Usuário**| u892594395_maisdenv3    |
-| **Senha**  | (definida no painel)    |
+| **Banco**  | u892594395_freelasmais  |
+| **Usuário**| u892594395_mausfreelas |
+| **Senha**  | (definida no painel)   |
 
-Depois de clicar em **Criar** no painel: no **phpMyAdmin**, selecione o banco **u892594395_maisfreelas2** e importe o arquivo **database/schema.sql**.
+O app cria as tabelas automaticamente ao subir. Opcional: no **phpMyAdmin**, selecione o banco **u892594395_freelasmais** e importe **database/schema.sql**.

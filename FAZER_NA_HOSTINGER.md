@@ -7,15 +7,14 @@ Siga na ordem. Quando terminar, o site sobe sem 503.
 ## 1. Banco MySQL no painel
 
 - **Bancos de dados** → **Gerenciamento** → criar banco e usuário (se ainda não criou).
-- Anote: nome do banco, usuário, senha (use os que estão no passo 3).
+- Banco atual do projeto: **u892594395_freelasmais** | usuário: **u892594395_mausfreelas**. Anote a senha e use no passo 4.
 
 ---
 
-## 2. Tabelas no MySQL
+## 2. Tabelas no MySQL (opcional)
 
-- **Bancos de dados** → **phpMyAdmin**.
-- Selecione o banco **u892594395_maisfreelas2**.
-- Aba **Importar** → envie o arquivo **database/schema.sql** do projeto (ou copie o conteúdo e execute na aba SQL).
+- O app **cria as tabelas automaticamente** ao subir (ensureDatabase). Não é obrigatório importar nada.
+- Se quiser criar manualmente: **Bancos de dados** → **phpMyAdmin** → selecione o banco **u892594395_freelasmais** → Aba **Importar** → envie **database/schema.sql** (ou execute **database/schema-autocreate.sql** na aba SQL).
 
 ---
 
