@@ -145,14 +145,25 @@ function startServer() {
     console.error('listen:', e.message);
     process.exit(1);
   });
-  db.testConnection().then(result => {
-    const ok = result && result.ok;
-    console.log(ok ? '[DB] MySQL OK' : '[DB] MySQL inacessível – confira .env');
-    if (!ok && result && result.message) console.log('[DB]', result.message);
-  }).catch(() => {});
+  // Testa conexão; se falhar com localhost, tenta 127.0.0.1 (Hostinger e outros)
+  db.testConnection()
+    .then((result) => {
+      const ok = result && result.ok;
+      console.log(ok ? '[DB] MySQL OK' : '[DB] MySQL inacessível – tentando 127.0.0.1...');
+      if (!ok && result && result.message) console.log('[DB]', result.message);
+      if (!ok) return db.tryFallbackHost();
+      return false;
+    })
+    .then((switched) => {
+      if (switched) return ensureDatabase();
+    })
+    .then(() => {
+      if (process.env.DB_HOST === '127.0.0.1') console.log('[DB] Banco e tabelas (host 127.0.0.1).');
+    })
+    .catch((e) => console.error('[DB]', e.message));
 }
 
-// Servidor sobe NA HORA; banco inicializa em background (evita 503 – site fica no ar mesmo se MySQL demorar)
+// Servidor sobe NA HORA; banco inicializa em background (evita 503)
 startServer();
 ensureDatabase()
   .then(() => {

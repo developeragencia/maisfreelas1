@@ -5,6 +5,9 @@
       <h1>Criar conta</h1>
       <% if (typeof error === 'string' && error) { %>
         <p class="error"><%= error %></p>
+        <% if (error.indexOf('Banco de dados') !== -1) { %>
+          <p class="form-hint">Acesse <a href="/health-db">/health-db</a> para ver o status da conexão e a dica de configuração.</p>
+        <% } %>
       <% } %>
       <form action="/cadastro" method="post" class="form" id="form-cadastro">
         <label for="name">Nome</label>
