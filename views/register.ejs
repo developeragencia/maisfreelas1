@@ -8,16 +8,16 @@
       <% } %>
       <form action="/cadastro" method="post" class="form" id="form-cadastro">
         <label for="name">Nome</label>
-        <input id="name" type="text" name="name" required placeholder="Seu nome" autocomplete="name" maxlength="255">
+        <input id="name" type="text" name="name" required placeholder="Seu nome" autocomplete="name" maxlength="255" value="<%= typeof name === 'string' ? name.replace(/"/g, '&quot;') : '' %>">
         <label for="email">E-mail</label>
-        <input id="email" type="email" name="email" required placeholder="seu@email.com" autocomplete="email" maxlength="255">
+        <input id="email" type="email" name="email" required placeholder="seu@email.com" autocomplete="email" maxlength="255" value="<%= typeof email === 'string' ? email.replace(/"/g, '&quot;') : '' %>">
         <label for="password">Senha (mín. 6 caracteres)</label>
         <input id="password" type="password" name="password" required minlength="6" placeholder="••••••••" autocomplete="new-password">
         <label for="role">Quero atuar como</label>
         <select id="role" name="role">
-          <option value="both">Cliente e Freelancer</option>
-          <option value="client">Só Cliente</option>
-          <option value="freelancer">Só Freelancer</option>
+          <option value="both" <%= (typeof role === 'string' && role === 'both') ? 'selected' : '' %>>Cliente e Freelancer</option>
+          <option value="client" <%= (typeof role === 'string' && role === 'client') ? 'selected' : '' %>>Só Cliente</option>
+          <option value="freelancer" <%= (typeof role === 'string' && role === 'freelancer') ? 'selected' : '' %>>Só Freelancer</option>
         </select>
         <button type="submit" class="btn btn-primary">Cadastrar</button>
       </form>

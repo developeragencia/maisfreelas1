@@ -1,12 +1,18 @@
 'use strict';
 const path = require('path');
-// Garante .env carregado mesmo se este módulo for o primeiro a rodar
+// Garante .env carregado: raiz do projeto, depois cwd (Hostinger pode rodar de outro diretório)
 try {
   require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
-  if (!process.env.DB_USER && !process.env.DB_NAME) require('dotenv').config();
+  if (!process.env.DB_USER && !process.env.DB_NAME) {
+    require('dotenv').config();
+    if (!process.env.DB_USER && !process.env.DB_NAME) require('dotenv').config({ path: path.join(process.cwd(), '.env') });
+  }
 } catch (_) {}
 
 const mysql = require('mysql2/promise');
+
+// Na Hostinger, MySQL em conexão local usa localhost (não 127.0.0.1)
+const DEFAULT_HOST = 'localhost';
 
 function getConfig() {
   const url = process.env.DATABASE_URL;
@@ -14,7 +20,7 @@ function getConfig() {
     try {
       const parsed = new URL(url);
       return {
-        host: parsed.hostname || '127.0.0.1',
+        host: parsed.hostname || DEFAULT_HOST,
         port: parseInt(parsed.port || '3306', 10),
         user: decodeURIComponent(parsed.username || ''),
         password: decodeURIComponent(parsed.password || ''),
@@ -31,10 +37,10 @@ function getConfig() {
   const dbName = process.env.DB_NAME || '';
   const dbUser = process.env.DB_USER || '';
   if (!dbName || !dbUser) {
-    console.error('[DB] Defina DB_NAME e DB_USER no arquivo .env na raiz do projeto.');
+    console.error('[DB] Defina DB_NAME e DB_USER no .env ou nas variáveis de ambiente do painel (Hostinger).');
   }
   return {
-    host: process.env.DB_HOST || '127.0.0.1',
+    host: (process.env.DB_HOST || '').trim() || DEFAULT_HOST,
     port: parseInt(process.env.DB_PORT || '3306', 10),
     user: dbUser,
     password: process.env.DB_PASSWORD || '',
@@ -52,7 +58,7 @@ try {
 } catch (e) {
   console.error('[DB] createPool:', e.message);
   pool = mysql.createPool({
-    host: process.env.DB_HOST || '127.0.0.1',
+    host: (process.env.DB_HOST || '').trim() || DEFAULT_HOST,
     port: parseInt(process.env.DB_PORT || '3306', 10),
     user: process.env.DB_USER || '',
     password: process.env.DB_PASSWORD || '',
@@ -60,6 +66,7 @@ try {
     waitForConnections: true,
     connectionLimit: 2,
     charset: 'utf8mb4',
+    connectTimeout: 10000,
   });
 }
 

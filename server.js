@@ -1,9 +1,10 @@
 'use strict';
 const path = require('path');
-// Carrega .env: primeiro da pasta do app, depois da pasta atual (produção pode rodar de outro cwd)
+// Carrega .env: pasta do app, depois cwd (Hostinger pode rodar de outro diretório)
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 if (!process.env.DB_USER && !process.env.DB_NAME) {
   require('dotenv').config();
+  require('dotenv').config({ path: path.join(process.cwd(), '.env') });
 }
 const express = require('express');
 const session = require('express-session');

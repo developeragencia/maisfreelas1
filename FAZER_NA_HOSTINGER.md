@@ -42,7 +42,7 @@ No Node.js App, em **Environment** / **Variáveis**, deve ter:
 | PORT | 3000 |
 | NODE_ENV | production |
 | SESSION_SECRET | uma chave longa e aleatória (troque a do exemplo) |
-| DB_HOST | 127.0.0.1 |
+| DB_HOST | localhost |
 | DB_PORT | 3306 |
 | DB_USER | (o usuário MySQL que você criou) |
 | DB_PASSWORD | (a senha do usuário MySQL) |

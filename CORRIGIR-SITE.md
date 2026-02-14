@@ -41,14 +41,14 @@ Adicione **uma por uma** (nome e valor):
 | PORT            | 3000                     |
 | NODE_ENV        | production               |
 | SESSION_SECRET  | (uma chave longa qualquer; pode copiar do .env) |
-| DB_HOST         | 127.0.0.1                |
+| DB_HOST         | localhost                |
 | DB_PORT         | 3306                     |
 | DB_USER         | u892594395_mausfreelas   |
 | DB_PASSWORD     | (a senha do MySQL que você definiu no painel)  |
 | DB_NAME         | u892594395_freelasmais   |
 | APP_URL         | https://vemnoquiz.com.br |
 
-**Importante:** sem **DB_USER**, **DB_PASSWORD** e **DB_NAME** corretos, login e cadastro não funcionam.
+**Importante:** sem **DB_USER**, **DB_PASSWORD** e **DB_NAME** corretos, login e cadastro não funcionam. Na Hostinger use **DB_HOST=localhost** (não 127.0.0.1).
 
 ---
 
@@ -80,7 +80,12 @@ Adicione **uma por uma** (nome e valor):
 
 3. **https://vemnoquiz.com.br/health-db**  
    - Se aparecer `"ok": true` → banco OK.  
-   - Se aparecer `"ok": false` → confira de novo as variáveis **DB_USER**, **DB_PASSWORD**, **DB_NAME** no painel (passo 3).
+   - Se aparecer `"ok": false` → confira as variáveis no painel (passo 3). Use **DB_HOST=localhost** (na Hostinger MySQL local é localhost).
+
+**Se cadastro ou login mostrar "Banco de dados indisponível":**  
+- Acesse **/health-db** e veja a mensagem e o **hint**.  
+- No painel do Node.js App, confira **DB_HOST=localhost**, **DB_USER**, **DB_PASSWORD** e **DB_NAME** (exatamente como no painel de Bancos de dados).  
+- Salve as variáveis e clique em **Reiniciar** no Node.js App.
 
 ---
 

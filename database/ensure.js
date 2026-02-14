@@ -15,7 +15,7 @@ async function ensureDatabase(config) {
   config = config || {};
   const dbName = config.database || process.env.DB_NAME || 'maisfreelas';
   const baseConfig = {
-    host: config.host || process.env.DB_HOST || '127.0.0.1',
+    host: (config.host || process.env.DB_HOST || '').trim() || 'localhost',
     port: parseInt(config.port || process.env.DB_PORT || '3306', 10),
     user: config.user || process.env.DB_USER || 'root',
     password: config.password || process.env.DB_PASSWORD || '',

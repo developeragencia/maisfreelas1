@@ -69,7 +69,7 @@ router.post('/login', requireGuest, wrapAsync(async (req, res) => {
 }));
 
 router.get('/cadastro', requireGuest, (req, res) => {
-  res.render('register', { error: null });
+  res.render('register', { error: null, name: '', email: '', role: 'both' });
 });
 
 router.post('/cadastro', requireGuest, wrapAsync(async (req, res) => {
@@ -77,13 +77,12 @@ router.post('/cadastro', requireGuest, wrapAsync(async (req, res) => {
   const nome = String(name || '').trim();
   const emailTrim = String(email || '').trim();
   const senha = String(password || '');
-
-  if (!nome) return res.render('register', { error: 'Preencha o nome.' });
-  if (!emailTrim) return res.render('register', { error: 'Preencha o e-mail.' });
-  if (!senha) return res.render('register', { error: 'Preencha a senha.' });
-  if (senha.length < 6) return res.render('register', { error: 'Senha com no mínimo 6 caracteres.' });
-
   const roleVal = ROLES.includes(String(role || '').trim()) ? String(role).trim() : 'both';
+
+  if (!nome) return res.render('register', { error: 'Preencha o nome.', name: nome, email: emailTrim, role: roleVal });
+  if (!emailTrim) return res.render('register', { error: 'Preencha o e-mail.', name: nome, email: emailTrim, role: roleVal });
+  if (!senha) return res.render('register', { error: 'Preencha a senha.', name: nome, email: emailTrim, role: roleVal });
+  if (senha.length < 6) return res.render('register', { error: 'Senha com no mínimo 6 caracteres.', name: nome, email: emailTrim, role: roleVal });
 
   try {
     const hash = await bcrypt.hash(senha, 10);
@@ -91,12 +90,13 @@ router.post('/cadastro', requireGuest, wrapAsync(async (req, res) => {
     return res.redirect(302, '/login');
   } catch (e) {
     console.error('Cadastro:', e.code || e.message, e.sqlMessage || '');
-    if (e.code === 'ER_DUP_ENTRY') return res.render('register', { error: 'Este e-mail já está cadastrado.' });
-    if (e.code === 'ER_NO_SUCH_TABLE' || e.code === 'ER_BAD_DB_ERROR' || e.code === 'ECONNREFUSED' || e.code === 'ER_ACCESS_DENIED_ERROR') {
-      console.error('[DB] Cadastro falhou – banco inacessível. Confira .env e reinicie o app.');
-      return res.render('register', { error: 'Banco de dados indisponível. Verifique a configuração do servidor e tente em alguns minutos.' });
+    if (e.code === 'ER_DUP_ENTRY') return res.render('register', { error: 'Este e-mail já está cadastrado.', name: nome, email: emailTrim, role: roleVal });
+    const dbUnavailable = ['ER_NO_SUCH_TABLE', 'ER_BAD_DB_ERROR', 'ECONNREFUSED', 'ER_ACCESS_DENIED_ERROR', 'ETIMEDOUT', 'ENOTFOUND'].includes(e.code);
+    if (dbUnavailable) {
+      console.error('[DB] Cadastro falhou – banco inacessível. Confira variáveis de ambiente (DB_HOST=localhost, DB_USER, DB_PASSWORD, DB_NAME).');
+      return res.render('register', { error: 'Banco de dados indisponível. Verifique a configuração do servidor (variáveis DB_HOST, DB_USER, DB_PASSWORD) e tente em alguns minutos.', name: nome, email: emailTrim, role: roleVal });
     }
-    return res.render('register', { error: 'Não foi possível concluir o cadastro. Tente novamente em alguns minutos.' });
+    return res.render('register', { error: 'Não foi possível concluir o cadastro. Tente novamente em alguns minutos.', name: nome, email: emailTrim, role: roleVal });
   }
 }));
 
@@ -108,30 +108,27 @@ router.get('/esqueci-senha', requireGuest, (req, res) => {
   res.render('forgot-password', { error: null, success: false });
 });
 
-router.post('/esqueci-senha', requireGuest, async (req, res) => {
+router.post('/esqueci-senha', requireGuest, wrapAsync(async (req, res) => {
   const email = (req.body && req.body.email) ? String(req.body.email).trim() : '';
   if (!email) return res.render('forgot-password', { error: 'Informe seu e-mail.', success: false });
   try {
-    const [rows] = await db.query('SELECT id FROM users WHERE email = ?', [email]);
-    if (rows && rows.length) {
-    }
-    res.render('forgot-password', { error: null, success: true });
+    await db.query('SELECT id FROM users WHERE email = ?', [email]);
   } catch (e) {
     console.error('Esqueci senha:', e.message);
-    res.render('forgot-password', { error: null, success: true });
   }
-});
+  res.render('forgot-password', { error: null, success: true });
+}));
 
-router.get('/perfil', requireAuth, async (req, res) => {
+router.get('/perfil', requireAuth, wrapAsync(async (req, res) => {
   try {
     const [rows] = await db.query('SELECT id, name, email, role, bio FROM users WHERE id = ?', [req.session.userId]);
     if (!rows || !rows.length) return res.redirect('/logout');
-    res.render('profile', { user: rows[0], error: null });
+    return res.render('profile', { user: rows[0], error: null });
   } catch (e) {
     console.error('Perfil:', e.message);
-    res.status(500).render('error', { message: 'Não foi possível carregar o perfil.' });
+    res.status(500).render('error', { message: 'Não foi possível carregar o perfil. Tente novamente.' });
   }
-});
+}));
 
 router.post('/perfil', requireAuth, async (req, res) => {
   const name = (req.body && req.body.name) ? String(req.body.name).trim() : '';

@@ -3,12 +3,16 @@
   <div class="form-page">
     <div class="form-card">
       <h1>Entrar</h1>
-      <% if (typeof redirect === 'string' && redirect) { %><p class="form-hint">Faça login para acessar seu painel.</p><% } %>
+      <% if (typeof redirect === 'string' && redirect) { %>
+        <p class="form-hint">Faça login para acessar seu painel.</p>
+      <% } %>
       <% if (typeof error === 'string' && error) { %>
         <p class="error"><%= error %></p>
       <% } %>
       <form action="/login" method="post" class="form" id="form-login">
-        <% if (typeof redirect === 'string' && redirect) { %><input type="hidden" name="redirect" value="<%= redirect %>"><% } %>
+        <% if (typeof redirect === 'string' && redirect) { %>
+          <input type="hidden" name="redirect" value="<%= redirect %>">
+        <% } %>
         <label for="email">E-mail</label>
         <input id="email" type="email" name="email" required placeholder="seu@email.com" autocomplete="email" value="">
         <label for="password">Senha</label>

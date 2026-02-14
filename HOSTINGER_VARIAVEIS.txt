@@ -3,7 +3,7 @@ Variáveis para colar no Node.js App da Hostinger (Environment / Variáveis de a
 PORT=3000
 NODE_ENV=production
 SESSION_SECRET=6642002c892b6f08c6cf4fad58243a06a50e7a97853cd4c115e69412c6a070dc
-DB_HOST=127.0.0.1
+DB_HOST=localhost
 DB_PORT=3306
 DB_USER=u892594395_mausfreelas
 DB_PASSWORD=Conselhos950@#
