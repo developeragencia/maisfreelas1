@@ -40,6 +40,7 @@ No Node.js App, em **Environment** / **Variáveis**, deve ter:
 | Nome | Valor |
 |------|--------|
 | PORT | 3000 |
+| HOST | 0.0.0.0 |
 | NODE_ENV | production |
 | SESSION_SECRET | uma chave longa e aleatória (troque a do exemplo) |
 | DB_HOST | localhost |

@@ -39,6 +39,7 @@ Adicione **uma por uma** (nome e valor):
 | Nome            | Valor                    |
 |-----------------|--------------------------|
 | PORT            | 3000                     |
+| HOST            | 0.0.0.0                  |
 | NODE_ENV        | production               |
 | SESSION_SECRET  | (uma chave longa qualquer; pode copiar do .env) |
 | DB_HOST         | localhost                |
