@@ -1,0 +1,11 @@
+<%- include('partials/header') %>
+<div class="container">
+  <div class="form-page">
+    <div class="form-card">
+      <h1>Algo deu errado</h1>
+      <p class="form-hint"><%= typeof message !== 'undefined' ? message : 'Erro interno. Tente novamente.' %></p>
+      <p><a href="/" class="btn btn-primary">Voltar ao início</a> <a href="/login" class="btn btn-ghost">Ir para login</a></p>
+    </div>
+  </div>
+</div>
+<%- include('partials/footer') %>

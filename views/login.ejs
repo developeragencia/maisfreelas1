@@ -3,7 +3,7 @@
   <div class="form-page">
     <div class="form-card">
       <h1>Entrar</h1>
-      <% if (redirect) { %><p class="form-hint">Faça login para acessar seu painel.</p><% } %>
+      <% if (typeof redirect === 'string' && redirect) { %><p class="form-hint">Faça login para acessar seu painel.</p><% } %>
       <% if (typeof error === 'string' && error) { %>
         <p class="error"><%= error %></p>
       <% } %>
@@ -15,6 +15,7 @@
         <input id="password" type="password" name="password" required placeholder="••••••••" autocomplete="current-password">
         <button type="submit" class="btn btn-primary">Entrar</button>
       </form>
+      <p class="form-footer"><a href="/esqueci-senha" class="link-muted">Esqueci minha senha</a></p>
       <p class="form-footer">Não tem conta? <a href="/cadastro">Cadastre-se</a></p>
     </div>
   </div>

@@ -105,7 +105,16 @@ app.use((req, res, next) => {
 
 app.use((err, req, res, next) => {
   console.error(err);
-  if (!res.headersSent) res.status(500).send('Erro interno.');
+  if (res.headersSent) return next(err);
+  res.status(500);
+  res.render('error', { message: 'Erro interno. Tente novamente em alguns instantes.' }, (renderErr, html) => {
+    if (renderErr) {
+      console.error('Error view:', renderErr.message);
+      res.send('Erro interno. Tente novamente.');
+    } else {
+      res.send(html);
+    }
+  });
 });
 
 function startServer() {

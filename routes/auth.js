@@ -2,33 +2,45 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const db = require('../config/db');
-const { requireGuest } = require('../middleware/auth');
+const { requireGuest, requireAuth } = require('../middleware/auth');
 
 const router = express.Router();
 const ROLES = ['client', 'freelancer', 'both'];
 
 function safeRedirect(path) {
+  if (path != null && Array.isArray(path)) path = path[0];
   if (!path || typeof path !== 'string') return '/dashboard';
-  const p = path.trim();
+  const p = String(path).trim();
   if (p.startsWith('/') && !p.startsWith('//')) return p;
   return '/dashboard';
 }
 
+function getRedirect(req) {
+  const raw = req.query.redirect || (req.body && req.body.redirect);
+  return raw ? safeRedirect(raw) : null;
+}
+
 router.get('/login', requireGuest, (req, res) => {
-  const redirect = req.query.redirect ? safeRedirect(req.query.redirect) : null;
-  res.render('login', { error: null, redirect });
+  try {
+    const redirect = getRedirect(req);
+    res.render('login', { error: null, redirect: redirect || null });
+  } catch (e) {
+    console.error('GET /login:', e.message);
+    res.status(500).render('error', { message: 'Não foi possível carregar a página de login. Tente novamente.' });
+  }
 });
 
 router.post('/login', requireGuest, async (req, res) => {
   const email = (req.body && req.body.email) ? String(req.body.email).trim() : '';
   const password = req.body && req.body.password ? String(req.body.password) : '';
-  if (!email || !password) return res.render('login', { error: 'Preencha e-mail e senha.', redirect: req.body.redirect || req.query.redirect ? safeRedirect(req.body.redirect || req.query.redirect) : null });
+  const redirect = getRedirect(req);
+  if (!email || !password) return res.render('login', { error: 'Preencha e-mail e senha.', redirect });
   try {
     const [rows] = await db.query('SELECT id, name, email, password, role FROM users WHERE email = ?', [email]);
-    if (!rows || !rows.length) return res.render('login', { error: 'E-mail ou senha incorretos.', redirect: req.query.redirect ? safeRedirect(req.query.redirect) : null });
+    if (!rows || !rows.length) return res.render('login', { error: 'E-mail ou senha incorretos.', redirect });
     const user = rows[0];
     const ok = await bcrypt.compare(password, user.password || '');
-    if (!ok) return res.render('login', { error: 'E-mail ou senha incorretos.', redirect: req.query.redirect ? safeRedirect(req.query.redirect) : null });
+    if (!ok) return res.render('login', { error: 'E-mail ou senha incorretos.', redirect });
     req.session.userId = user.id;
     req.session.userName = user.name;
     req.session.userRole = user.role;
@@ -37,12 +49,12 @@ router.post('/login', requireGuest, async (req, res) => {
         console.error('Session save:', err.message);
         return res.render('login', { error: 'Erro ao entrar. Tente de novo.', redirect: null });
       }
-      const goTo = safeRedirect(req.body.redirect || req.query.redirect);
+      const goTo = redirect || '/dashboard';
       res.redirect(302, goTo);
     });
   } catch (e) {
     console.error('Login:', e.message);
-    res.render('login', { error: 'Erro ao entrar. Tente de novo.' });
+    res.render('login', { error: 'Erro ao entrar. Tente de novo.', redirect: null });
   }
 });
 
@@ -77,6 +89,64 @@ router.post('/cadastro', requireGuest, async (req, res) => {
 
 router.post('/logout', (req, res) => {
   req.session.destroy(() => res.redirect('/'));
+});
+
+router.get('/esqueci-senha', requireGuest, (req, res) => {
+  res.render('forgot-password', { error: null, success: false });
+});
+
+router.post('/esqueci-senha', requireGuest, async (req, res) => {
+  const email = (req.body && req.body.email) ? String(req.body.email).trim() : '';
+  if (!email) return res.render('forgot-password', { error: 'Informe seu e-mail.', success: false });
+  try {
+    const [rows] = await db.query('SELECT id FROM users WHERE email = ?', [email]);
+    if (rows && rows.length) {
+    }
+    res.render('forgot-password', { error: null, success: true });
+  } catch (e) {
+    console.error('Esqueci senha:', e.message);
+    res.render('forgot-password', { error: null, success: true });
+  }
+});
+
+router.get('/perfil', requireAuth, async (req, res) => {
+  try {
+    const [rows] = await db.query('SELECT id, name, email, role, bio FROM users WHERE id = ?', [req.session.userId]);
+    if (!rows || !rows.length) return res.redirect('/logout');
+    res.render('profile', { user: rows[0], error: null });
+  } catch (e) {
+    console.error('Perfil:', e.message);
+    res.status(500).render('error', { message: 'Não foi possível carregar o perfil.' });
+  }
+});
+
+router.post('/perfil', requireAuth, async (req, res) => {
+  const name = (req.body && req.body.name) ? String(req.body.name).trim() : '';
+  const bio = (req.body && req.body.bio) != null ? String(req.body.bio).trim() : '';
+  if (!name) {
+    try {
+      const [rows] = await db.query('SELECT id, name, email, role, bio FROM users WHERE id = ?', [req.session.userId]);
+      return res.render('profile', { user: rows && rows[0] ? rows[0] : { name: req.session.userName, email: '', role: '', bio: '' }, error: 'Preencha o nome.' });
+    } catch (_) {
+      return res.render('profile', { user: { name: req.session.userName, email: '', role: '', bio: '' }, error: 'Preencha o nome.' });
+    }
+  }
+  try {
+    await db.query('UPDATE users SET name = ?, bio = ? WHERE id = ?', [name, bio || null, req.session.userId]);
+    req.session.userName = name;
+    req.session.save((err) => {
+      if (err) console.error('Session save:', err.message);
+      res.redirect('/perfil');
+    });
+  } catch (e) {
+    console.error('Perfil update:', e.message);
+    try {
+      const [rows] = await db.query('SELECT id, name, email, role, bio FROM users WHERE id = ?', [req.session.userId]);
+      return res.render('profile', { user: rows && rows[0] ? rows[0] : { name: req.session.userName, email: '', role: '', bio: '' }, error: 'Erro ao salvar. Tente novamente.' });
+    } catch (_) {
+      res.render('profile', { user: { name: req.session.userName, email: '', role: '', bio: '' }, error: 'Erro ao salvar. Tente novamente.' });
+    }
+  }
 });
 
 module.exports = router;

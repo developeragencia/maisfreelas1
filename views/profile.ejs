@@ -1,0 +1,20 @@
+<%- include('partials/header') %>
+<div class="container">
+  <div class="form-page">
+    <div class="form-card" style="max-width: 520px;">
+      <h1>Meu perfil</h1>
+      <% if (typeof error === 'string' && error) { %><p class="error"><%= error %></p><% } %>
+      <form action="/perfil" method="post" class="form">
+        <label for="name">Nome</label>
+        <input id="name" type="text" name="name" required value="<%= (user && user.name) || '' %>" maxlength="255">
+        <label>E-mail</label>
+        <input type="text" value="<%= (user && user.email) || '' %>" disabled class="input-readonly" tabindex="-1">
+        <label for="bio">Bio (opcional)</label>
+        <textarea id="bio" name="bio" rows="4" placeholder="Conte um pouco sobre você." maxlength="1000"><%= (user && user.bio) || '' %></textarea>
+        <button type="submit" class="btn btn-primary">Salvar</button>
+      </form>
+      <p class="form-footer"><a href="/dashboard">Voltar ao dashboard</a></p>
+    </div>
+  </div>
+</div>
+<%- include('partials/footer') %>

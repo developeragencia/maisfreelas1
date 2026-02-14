@@ -444,6 +444,8 @@ body {
   transition: color var(--transition);
 }
 .form-card .form-footer a:hover { color: var(--accent-hover); }
+.form-card .form-footer a.link-muted { color: var(--text-muted); font-weight: normal; }
+.form-card .form-footer a.link-muted:hover { color: var(--accent); }
 .form-card .form-hint {
   color: var(--text-muted);
   font-size: 0.95rem;
@@ -490,6 +492,7 @@ body {
 }
 .form input::placeholder,
 .form textarea::placeholder { color: var(--text-muted); opacity: 0.8; }
+.form input.input-readonly, .form input:disabled { background: var(--bg-elevated); cursor: not-allowed; color: var(--text-muted); }
 .form textarea { min-height: 110px; resize: vertical; }
 .form button[type="submit"] {
   width: 100%;
