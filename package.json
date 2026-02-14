@@ -4,9 +4,9 @@
   "description": "Plataforma MaisFreelas - Node.js",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "node server-bootstrap.js",
     "dev": "node server.js",
-    "prod": "node server.js",
+    "prod": "node server-bootstrap.js",
     "db:init": "node database/init.js"
   },
   "engines": {

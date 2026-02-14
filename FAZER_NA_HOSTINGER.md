@@ -60,7 +60,7 @@ No Node.js App, em **Environment** / **Variáveis**, deve ter:
 
 - Acesse **https://vemnoquiz.com.br/health** → deve responder **ok**.
 - Acesse **https://vemnoquiz.com.br** → deve abrir a home.
-- **Se der 503:** o Node pode não estar rodando. Confira: **Logs** do Node.js App (erro ao subir?); variáveis de ambiente (DB_* definidas?); **Redeploy** ou **Restart** do app; **Connect domain** apontando para este app.
+- **Se der 503:** (1) Faça **Redeploy** do Node.js App e espere 1–2 min. (2) Confira **Logs** do app: deve aparecer `MaisFreelas http://0.0.0.0:3000`. (3) Variáveis de ambiente (DB_HOST, DB_USER, DB_PASSWORD, DB_NAME) no painel. (4) **Conectar domínio** deve estar em **vemnoquiz.com.br** para este Node.js App.
 
 ---
 

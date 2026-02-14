@@ -149,26 +149,13 @@ function startServer() {
   }).catch(() => {});
 }
 
-// Timeout: se o banco demorar, sobe o servidor mesmo assim (evita 503 por travamento na subida)
-const DB_INIT_TIMEOUT_MS = 15000;
-const dbReady = ensureDatabase()
+// Servidor sobe NA HORA; banco inicializa em background (evita 503 – site fica no ar mesmo se MySQL demorar)
+startServer();
+ensureDatabase()
   .then(() => {
-    console.log('[DB] Banco e tabelas prontos (inicialização automática).');
-    return db.query('SELECT 1 FROM users LIMIT 1').then(() => {
-      console.log('[DB] Tabela users acessível.');
-    }).catch((e) => {
-      console.error('[DB] Aviso: não foi possível acessar a tabela users:', e.message);
-    });
+    console.log('[DB] Banco e tabelas prontos.');
+    return db.query('SELECT 1 FROM users LIMIT 1').then(() => console.log('[DB] Tabela users OK')).catch(() => {});
   })
   .catch((e) => {
-    console.error('[DB] Inicialização automática do banco falhou:', e.message);
-    console.error('[DB] Verifique .env: DB_HOST, DB_USER, DB_PASSWORD, DB_NAME e se o MySQL está rodando.');
+    console.error('[DB] Init falhou:', e.message);
   });
-
-const timeout = new Promise((resolve) => setTimeout(resolve, DB_INIT_TIMEOUT_MS));
-Promise.race([dbReady, timeout]).then(() => {
-  startServer();
-}).catch((e) => {
-  console.error('Startup:', e.message);
-  startServer();
-});
