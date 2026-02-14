@@ -12,7 +12,11 @@ try {
   const HOST = process.env.PORT ? '0.0.0.0' : 'localhost';
   app.get('/health', (req, res) => res.status(200).send('ok'));
   app.use((req, res) => res.status(503).send('App em manutenção. Veja os logs do servidor.'));
-  app.listen(PORT, HOST, () => {
+  const server = app.listen(PORT, HOST, () => {
     console.log('Servidor mínimo em http://%s:%s (server.js falhou)', HOST, PORT);
+  });
+  server.on('error', (e) => {
+    console.error('Não foi possível subir nem o servidor mínimo:', e.message);
+    process.exit(1);
   });
 }

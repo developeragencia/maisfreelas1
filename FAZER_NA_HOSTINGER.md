@@ -1,5 +1,7 @@
 # Deploy em produção – vemnoquiz.com.br (Hostinger)
 
+**Se o site não aparece ou dá 503:** use o guia **CORRIGIR-SITE.md** (passo a passo para corrigir).
+
 Siga na ordem. Quando terminar, o site sobe sem 503.
 
 ---
