@@ -8,8 +8,9 @@ No servidor (SSH): `pm2 list` ou `ps aux | grep node`. Se não estiver, inicie:
 - Ou use o comando que sua hospedagem indica para iniciar a aplicação Node.
 
 ## 2. App escutando em 0.0.0.0
-Quando a variável **PORT** está definida (ex.: `PORT=3000`), o app já escuta em `0.0.0.0`. Garanta no `.env` ou no comando de start:
+Garanta no `.env` ou no comando de start:
 - `PORT=3000` (ou a mesma porta que o Nginx usa no `proxy_pass`)
+- `HOST=0.0.0.0` (para o proxy alcançar o app)
 
 ## 2. Processo Node rodando
 - **PM2:** `pm2 start server.js --name maisfreelas` e `pm2 save`
@@ -40,7 +41,8 @@ Se cadastro/login mostra **"Sem conexão com o banco"**:
    - `ER_BAD_DB_ERROR` → O banco não existe; crie o banco e execute `database/schema.sql`.
 
 2. **No servidor,** crie o arquivo `.env` (copie de `.env.example`) e preencha:
-   - `DB_HOST` (geralmente `127.0.0.1` se o MySQL está na mesma máquina)
+   - `PORT=3000`, `HOST=0.0.0.0`
+   - `DB_HOST` (geralmente `127.0.0.1` se o MySQL está na mesma máquina; na Hostinger use `localhost`)
    - `DB_PORT` (geralmente `3306`)
    - `DB_USER` e `DB_PASSWORD` (usuário do MySQL com permissão no banco)
    - `DB_NAME` (nome do banco que você criou)

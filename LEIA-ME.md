@@ -10,6 +10,7 @@ Plataforma para conectar projetos e freelancers: cadastro, login, publicar proje
 
 ```env
 PORT=3000
+HOST=0.0.0.0
 NODE_ENV=development
 SESSION_SECRET=uma_chave_secreta
 

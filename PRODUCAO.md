@@ -31,6 +31,7 @@ Na pasta do projeto (ex.: `/var/www/maisfreelas`), crie o arquivo `.env`:
 
 ```env
 PORT=3000
+HOST=0.0.0.0
 NODE_ENV=production
 SESSION_SECRET=uma_chave_secreta_longa_e_aleatoria_aqui
 
