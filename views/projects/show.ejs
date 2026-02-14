@@ -11,6 +11,7 @@
     </div>
     <% if (isOwner && (project.status === 'open' || project.status === 'in_progress')) { %>
     <div class="project-owner-actions">
+      <% if (project.status === 'open') { %><a href="/projetos/<%= project.id %>/editar" class="btn btn-ghost">Editar projeto</a><% } %>
       <% if (project.status === 'in_progress') { %>
       <form action="/projetos/<%= project.id %>/concluir" method="post" style="display:inline">
         <button type="submit" class="btn btn-primary">Concluir projeto</button>
@@ -64,6 +65,47 @@
       <p>Nenhuma proposta ainda.</p>
       <% } %>
     </div>
+
+    <% if (canChat && (isOwner || project.freelancer_id)) { %>
+    <div class="messages-section" id="mensagens">
+      <h2>Mensagens</h2>
+      <% if (messages && messages.length) { %>
+      <ul class="messages-list">
+        <% messages.forEach(function(m) { %>
+        <li class="message-item <%= m.sender_id === user.id ? 'own' : '' %>">
+          <strong><%= m.sender_name %></strong> <small><%= new Date(m.created_at).toLocaleString('pt-BR') %></small>
+          <p><%= m.body %></p>
+        </li>
+        <% }); %>
+      </ul>
+      <% } else { %><p>Nenhuma mensagem ainda.</p><% } %>
+      <form action="/projetos/<%= project.id %>/mensagem" method="post" class="form form-inline">
+        <textarea name="body" required rows="2" placeholder="Digite sua mensagem..." maxlength="5000"></textarea>
+        <button type="submit" class="btn btn-primary">Enviar</button>
+      </form>
+    </div>
+    <% } %>
+
+    <% if (isOwner && project.status === 'completed' && project.freelancer_id) { %>
+    <div class="review-section">
+      <h2>Avaliar freelancer</h2>
+      <form action="/projetos/<%= project.id %>/avaliar" method="post" class="form">
+        <label>Nota (1 a 5 estrelas)
+          <select name="rating" required>
+            <option value="1">1 ★</option>
+            <option value="2">2 ★</option>
+            <option value="3">3 ★</option>
+            <option value="4">4 ★</option>
+            <option value="5" selected>5 ★</option>
+          </select>
+        </label>
+        <label>Comentário (opcional)
+          <textarea name="comment" rows="3" placeholder="Conte como foi o trabalho."></textarea>
+        </label>
+        <button type="submit" class="btn btn-primary">Enviar avaliação</button>
+      </form>
+    </div>
+    <% } %>
   </section>
   </div>
 <%- include('../partials/footer') %>

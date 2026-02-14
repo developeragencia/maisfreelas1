@@ -1,0 +1,39 @@
+<%- include('../partials/header') %>
+<div class="container">
+  <div class="form-page">
+    <div class="form-card" style="max-width: 520px;">
+      <h1>Editar projeto</h1>
+      <% if (error) { %><p class="error"><%= error %></p><% } %>
+      <form action="/projetos/<%= project.id %>/editar" method="post" class="form">
+        <label>Título
+          <input type="text" name="title" required value="<%= (project.title || '') %>" placeholder="Ex: Site institucional em Node.js">
+        </label>
+        <label>Descrição
+          <textarea name="description" required rows="5" placeholder="Descreva o escopo, entregas e expectativas."><%= (project.description || '') %></textarea>
+        </label>
+        <label>Categoria
+          <input type="text" name="category" required value="<%= (project.category || '') %>" placeholder="Ex: Desenvolvimento Web">
+        </label>
+        <label>Habilidades (opcional)
+          <input type="text" name="skills" value="<%= (project.skills || '') %>" placeholder="Ex: Node, MySQL, React">
+        </label>
+        <label>Nível
+          <select name="level">
+            <option value="beginner" <%= project.level === 'beginner' ? 'selected' : '' %>>Iniciante</option>
+            <option value="intermediate" <%= project.level === 'intermediate' ? 'selected' : '' %>>Intermediário</option>
+            <option value="expert" <%= project.level === 'expert' ? 'selected' : '' %>>Expert</option>
+          </select>
+        </label>
+        <label>Orçamento (R$)
+          <input type="number" name="budget" step="0.01" required value="<%= (project.budget != null && project.budget !== '') ? project.budget : '' %>" placeholder="0.00">
+        </label>
+        <label>Prazo (opcional)
+          <input type="date" name="deadline" value="<%= project.deadline ? new Date(project.deadline).toISOString().slice(0, 10) : '' %>">
+        </label>
+        <button type="submit" class="btn btn-primary">Salvar</button>
+      </form>
+      <p class="form-footer"><a href="/projetos/<%= project.id %>">Voltar ao projeto</a></p>
+    </div>
+  </div>
+</div>
+<%- include('../partials/footer') %>

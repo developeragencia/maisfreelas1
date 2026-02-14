@@ -1,0 +1,29 @@
+<%- include('../partials/header') %>
+<div class="container">
+  <section class="section project-detail-wrap">
+    <a href="/freelancers" class="back-link">← Voltar aos freelancers</a>
+    <h1><%= freelancer.name %></h1>
+    <p class="freelancer-role"><%= freelancer.role === 'both' ? 'Cliente e Freelancer' : 'Freelancer' %></p>
+    <% if (freelancer.bio) { %><div class="project-description"><%= freelancer.bio %></div><% } %>
+    <div class="freelancer-stats-row">
+      <span><strong>Projetos concluídos:</strong> <%= stats.projects_done || 0 %></span>
+      <span><strong>Total recebido:</strong> R$ <%= Number(stats.total_earned || 0).toLocaleString('pt-BR') %></span>
+      <% if (avgRating) { %><span><strong>Avaliação média:</strong> <%= avgRating %> ★</span><% } %>
+    </div>
+    <h2>Avaliações (<%= reviews.length %>)</h2>
+    <% if (reviews && reviews.length) { %>
+    <ul class="reviews-list">
+      <% reviews.forEach(function(r) { %>
+      <li class="review-item">
+        <div class="review-rating"><%= r.rating %> ★</div>
+        <% if (r.comment) { %><p><%= r.comment %></p><% } %>
+        <small><%= r.reviewer_name %> — <%= new Date(r.created_at).toLocaleDateString('pt-BR') %></small>
+      </li>
+      <% }); %>
+    </ul>
+    <% } else { %>
+    <p>Nenhuma avaliação ainda.</p>
+    <% } %>
+  </section>
+</div>
+<%- include('../partials/footer') %>

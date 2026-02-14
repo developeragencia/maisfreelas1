@@ -29,9 +29,11 @@
       <a href="/" class="site-logo">MaisFreelas</a>
       <nav class="site-nav">
         <a href="/projetos">Projetos</a>
+        <a href="/freelancers">Freelancers</a>
         <% if (user) { %>
           <a href="/dashboard">Dashboard</a>
           <a href="/perfil">Perfil</a>
+          <a href="/notificacoes" class="nav-notifications">Notificações <% if (typeof notificationsUnread !== 'undefined' && notificationsUnread > 0) { %><span class="notif-badge"><%= notificationsUnread %></span><% } %></a>
         <% } else { %>
           <a href="/login">Entrar</a>
         <% } %>

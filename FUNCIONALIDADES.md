@@ -3,29 +3,35 @@
 ## O que já existe (implementado)
 
 ### Autenticação
-- **Login** com e-mail e senha; sessão com cookie seguro; redirect para a página que o usuário tentou acessar (ex.: `/dashboard` → login → volta ao dashboard).
+- **Login** com e-mail e senha; sessão com cookie seguro; redirect para a página que o usuário tentou acessar.
 - **Cadastro** com nome, e-mail, senha (mín. 6 caracteres), papel (Cliente / Freelancer / Ambos).
+- **Esqueci minha senha** (página e fluxo; envio por e-mail em breve).
+- **Perfil** (editar nome e bio).
 - **Logout**; proteção de rotas (`requireAuth`, `requireGuest`).
-- **Banco** criado automaticamente na subida do app (tabelas `users`, `projects`, `proposals`).
+- **Banco** criado automaticamente na subida do app (tabelas `users`, `projects`, `proposals`, `notifications`, `messages`, `reviews`).
 
 ### Projetos
-- **Listagem** de projetos abertos com **filtro por categoria** (chips: Todas, e uma por categoria).
-- **Detalhe** do projeto (título, descrição, categoria, orçamento, status, cliente).
-- **Publicar projeto** (título, descrição, categoria, habilidades, nível, orçamento, prazo).
-- **Propostas**: freelancer envia proposta (carta, valor, prazo em dias); cliente aceita ou rejeita.
-- **Concluir projeto** (cliente, quando status = Em andamento).
-- **Cancelar projeto** (cliente, quando Aberto ou Em andamento).
+- **Listagem** com **busca** (título/descrição), **filtros** por categoria, nível, orçamento mín/máx.
+- **Detalhe** do projeto; **editar projeto** (cliente, quando status = Aberto).
+- **Publicar projeto**; **Propostas** (enviar, aceitar, rejeitar); **Concluir** e **Cancelar** projeto.
+- **Mensagens (chat)** entre cliente e freelancer no projeto (após proposta aceita).
+- **Avaliações (reviews)**: cliente avalia o freelancer (1–5 estrelas + comentário) após conclusão.
+
+### Freelancers
+- **Listagem** em `/freelancers` com filtro por categoria (freelancers que já atuaram na categoria).
+- **Perfil público** do freelancer: bio, projetos concluídos, total recebido, avaliações e média.
+
+### Notificações
+- **Notificações** (nova proposta, proposta aceita/rejeitada, projeto concluído); badge no header; página `/notificacoes` (marcar lida / marcar todas).
 
 ### Dashboard
-- **Meus projetos**: lista dos projetos do usuário (como cliente) com status em português (Aberto, Em andamento, Concluído, Cancelado).
-- **Minhas propostas**: lista das propostas enviadas pelo usuário com status (Pendente, Aceita, Rejeitada).
-- Links para a página do projeto e atalhos (Publicar projeto, Ver projetos).
+- **Métricas**: projetos publicados, concluídos, propostas enviadas, aceitas, valor recebido (propostas aceitas).
+- **Meus projetos** e **Minhas propostas** com status em português.
 
 ### Layout e UX
-- Tema claro (fundo branco), cores harmonizadas (âmbar/destaque).
-- Header com logo, navegação (Projetos, Entrar/Dashboard), Cadastrar/Sair.
-- Cache-busting no CSS (`?v=timestamp`) para atualização após deploy.
-- Páginas de login e cadastro recriadas (markup limpo, mensagens de erro amigáveis).
+- Tema claro (fundo branco), cores harmonizadas (âmbar).
+- Header: Projetos, Freelancers, Dashboard, Perfil, Notificações (com badge), Sair/Cadastrar.
+- Cache-busting no CSS; página de erro amigável; home com “Como funciona”, projetos em destaque e CTA.
 
 ---
 
@@ -34,17 +40,12 @@
 ### Prioridade alta
 | Funcionalidade | Descrição | Sugestão de tecnologia |
 |----------------|-----------|-------------------------|
-| **Recuperar senha** | "Esqueci minha senha" com link por e-mail | Nodemailer + token em tabela `password_resets` (expira em 1h) |
-| **Perfil do usuário** | Editar nome, bio; foto (opcional) | Multer (upload) ou URL; página `/perfil` |
-| **Notificações** | Avisar: nova proposta, proposta aceita/rejeitada, projeto concluído | Tabela `notifications` + badge no header; opcional: e-mail (Nodemailer) ou Socket.io |
+| **Recuperar senha (e-mail)** | Enviar link de redefinição por e-mail | Nodemailer + tabela `password_resets` (token, expira 1h) |
 
 ### Prioridade média
 | Funcionalidade | Descrição | Sugestão de tecnologia |
 |----------------|-----------|-------------------------|
-| **Mensagens/Chat** | Cliente e freelancer conversarem após proposta aceita | Tabela `messages` (project_id, sender_id, body, created_at); página ou modal; opcional: Socket.io para tempo real |
-| **Busca e filtros avançados** | Busca por texto; filtro por orçamento, prazo, nível | Query com `LIKE` e `WHERE`; formulário na listagem |
-| **Avaliações** | Cliente avalia freelancer (e opcionalmente vice-versa) após conclusão | Tabela `reviews` (project_id, reviewer_id, reviewee_id, rating, comment); estrelas + comentário |
-| **Editar projeto** | Cliente editar título/descrição/orçamento enquanto status = Aberto | Rota `GET/POST /projetos/:id/editar`; mesmo form do criar, pré-preenchido |
+| **Pagamento na plataforma** | Liberar pagamento quando projeto concluído | Mercado Pago ou Stripe; tabela `payments`; webhook |
 
 ### Prioridade baixa
 | Funcionalidade | Descrição | Sugestão de tecnologia |

@@ -10,6 +10,8 @@ const { ensureDatabase } = require('./database/ensure');
 const authRoutes = require('./routes/auth');
 const projectRoutes = require('./routes/projects');
 const dashboardRoutes = require('./routes/dashboard');
+const notificationRoutes = require('./routes/notifications');
+const freelancerRoutes = require('./routes/freelancers');
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
@@ -67,10 +69,22 @@ app.use(session({
   },
 }));
 
+const notifications = require('./lib/notifications');
+
 app.use((req, res, next) => {
   res.locals.user = req.session?.userId
     ? { id: req.session.userId, name: req.session.userName, role: req.session.userRole }
     : null;
+  next();
+});
+
+app.use(async (req, res, next) => {
+  res.locals.notificationsUnread = 0;
+  if (req.session && req.session.userId) {
+    try {
+      res.locals.notificationsUnread = await notifications.getUnreadCount(req.session.userId);
+    } catch (_) {}
+  }
   next();
 });
 
@@ -94,6 +108,8 @@ app.get('/', async (req, res, next) => {
 app.use(authRoutes);
 app.use('/projetos', projectRoutes);
 app.use('/dashboard', dashboardRoutes);
+app.use('/notificacoes', notificationRoutes);
+app.use('/freelancers', freelancerRoutes);
 
 app.use((req, res, next) => {
   res.status(404);

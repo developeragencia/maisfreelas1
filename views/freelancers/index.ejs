@@ -1,0 +1,31 @@
+<%- include('../partials/header') %>
+<div class="container">
+  <section class="section">
+    <div class="page-head">
+      <h1>Encontrar Freelancers</h1>
+    </div>
+    <% if (categories && categories.length) { %>
+    <div class="filter-bar">
+      <span class="filter-label">Categoria (com projetos concluídos):</span>
+      <a href="/freelancers" class="filter-chip <%= !currentCategory ? 'active' : '' %>">Todas</a>
+      <% categories.forEach(function(cat) { %>
+      <a href="/freelancers?categoria=<%= encodeURIComponent(cat) %>" class="filter-chip <%= currentCategory === cat ? 'active' : '' %>"><%= cat %></a>
+      <% }); %>
+    </div>
+    <% } %>
+    <% if (freelancers && freelancers.length) { %>
+    <div class="freelancers-grid">
+      <% freelancers.forEach(function(f) { %>
+      <a href="/freelancers/<%= f.id %>" class="freelancer-card">
+        <h3><%= f.name %></h3>
+        <p class="freelancer-bio"><%= (f.bio || 'Sem descrição.').substring(0, 120) %><%= (f.bio && f.bio.length > 120) ? '...' : '' %></p>
+        <span class="tag"><%= f.role === 'both' ? 'Cliente e Freelancer' : 'Freelancer' %></span>
+      </a>
+      <% }); %>
+    </div>
+    <% } else { %>
+    <p class="empty-state">Nenhum freelancer encontrado.</p>
+    <% } %>
+  </section>
+</div>
+<%- include('../partials/footer') %>

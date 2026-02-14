@@ -21,6 +21,31 @@
       <p>Gerencie seus projetos e propostas aqui.</p>
     </div>
 
+    <% if (typeof stats !== 'undefined' && stats) { %>
+    <div class="dashboard-stats">
+      <div class="stat-card">
+        <span class="stat-value"><%= (stats.projectsTotal || 0) %></span>
+        <span class="stat-label">Projetos publicados</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value"><%= (stats.projectsCompleted || 0) %></span>
+        <span class="stat-label">Projetos concluídos</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value"><%= (stats.proposalsTotal || 0) %></span>
+        <span class="stat-label">Propostas enviadas</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value"><%= (stats.proposalsAccepted || 0) %></span>
+        <span class="stat-label">Propostas aceitas</span>
+      </div>
+      <div class="stat-card stat-card-accent">
+        <span class="stat-value">R$ <%= Number(stats.valueReceived || 0).toLocaleString('pt-BR') %></span>
+        <span class="stat-label">Valor (propostas aceitas)</span>
+      </div>
+    </div>
+    <% } %>
+
     <div class="dashboard-grid">
       <div class="dashboard-panel">
         <h2>Meus projetos</h2>

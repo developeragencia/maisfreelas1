@@ -55,4 +55,48 @@ CREATE TABLE IF NOT EXISTS proposals (
   CONSTRAINT fk_proposals_freelancer FOREIGN KEY (freelancer_id) REFERENCES users (id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS notifications (
+  id int unsigned NOT NULL AUTO_INCREMENT,
+  user_id int unsigned NOT NULL,
+  type varchar(50) NOT NULL,
+  title varchar(255) NOT NULL,
+  body text,
+  link varchar(500) DEFAULT NULL,
+  read_at datetime DEFAULT NULL,
+  created_at datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  KEY user_id (user_id),
+  KEY read_at (read_at),
+  CONSTRAINT fk_notifications_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS messages (
+  id int unsigned NOT NULL AUTO_INCREMENT,
+  project_id int unsigned NOT NULL,
+  sender_id int unsigned NOT NULL,
+  body text NOT NULL,
+  created_at datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  KEY project_id (project_id),
+  KEY sender_id (sender_id),
+  CONSTRAINT fk_messages_project FOREIGN KEY (project_id) REFERENCES projects (id) ON DELETE CASCADE,
+  CONSTRAINT fk_messages_sender FOREIGN KEY (sender_id) REFERENCES users (id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS reviews (
+  id int unsigned NOT NULL AUTO_INCREMENT,
+  project_id int unsigned NOT NULL,
+  reviewer_id int unsigned NOT NULL,
+  reviewee_id int unsigned NOT NULL,
+  rating tinyint unsigned NOT NULL,
+  comment text,
+  created_at datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  UNIQUE KEY one_review_per_project_reviewer (project_id, reviewer_id),
+  KEY reviewee_id (reviewee_id),
+  CONSTRAINT fk_reviews_project FOREIGN KEY (project_id) REFERENCES projects (id) ON DELETE CASCADE,
+  CONSTRAINT fk_reviews_reviewer FOREIGN KEY (reviewer_id) REFERENCES users (id) ON DELETE CASCADE,
+  CONSTRAINT fk_reviews_reviewee FOREIGN KEY (reviewee_id) REFERENCES users (id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 SET foreign_key_checks = 1;

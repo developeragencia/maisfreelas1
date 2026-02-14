@@ -5,6 +5,21 @@
       <h1>Projetos abertos</h1>
       <% if (user) { %><a href="/projetos/publicar" class="btn btn-primary">Publicar projeto</a><% } %>
     </div>
+    <form class="filter-form" action="/projetos" method="get">
+      <div class="filter-row">
+        <input type="text" name="q" placeholder="Buscar (título ou descrição)" value="<%= searchQ || '' %>" class="filter-input">
+        <select name="nivel" class="filter-select">
+          <option value="">Qualquer nível</option>
+          <option value="beginner" <%= searchLevel === 'beginner' ? 'selected' : '' %>>Iniciante</option>
+          <option value="intermediate" <%= searchLevel === 'intermediate' ? 'selected' : '' %>>Intermediário</option>
+          <option value="expert" <%= searchLevel === 'expert' ? 'selected' : '' %>>Expert</option>
+        </select>
+        <input type="number" name="orcamento_min" placeholder="Orç. mín." step="0.01" min="0" value="<%= searchBudgetMin != null ? searchBudgetMin : '' %>" class="filter-input filter-input-num">
+        <input type="number" name="orcamento_max" placeholder="Orç. máx." step="0.01" min="0" value="<%= searchBudgetMax != null ? searchBudgetMax : '' %>" class="filter-input filter-input-num">
+        <% if (currentCategory) { %><input type="hidden" name="categoria" value="<%= currentCategory %>"><% } %>
+        <button type="submit" class="btn btn-primary">Filtrar</button>
+      </div>
+    </form>
     <% if (categories && categories.length) { %>
     <div class="filter-bar">
       <span class="filter-label">Categoria:</span>
