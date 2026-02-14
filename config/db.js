@@ -22,6 +22,7 @@ function getConfig() {
         waitForConnections: true,
         connectionLimit: 10,
         charset: 'utf8mb4',
+        connectTimeout: 10000,
       };
     } catch (e) {
       console.error('[DB] DATABASE_URL inválida:', e.message);
@@ -41,6 +42,7 @@ function getConfig() {
     waitForConnections: true,
     connectionLimit: 10,
     charset: 'utf8mb4',
+    connectTimeout: 10000,
   };
 }
 

@@ -23,18 +23,20 @@ async function ensureDatabase(config) {
     multipleStatements: true,
   };
 
+  const connectTimeout = 10000;
+  const connConfig = { ...baseConfig, connectTimeout };
   let conn = null;
   try {
     try {
-      conn = await mysql.createConnection({ ...baseConfig, database: dbName });
+      conn = await mysql.createConnection({ ...connConfig, database: dbName });
       await conn.ping();
     } catch (e) {
       if (e.code === 'ER_BAD_DB_ERROR') {
         if (conn) await conn.end();
-        conn = await mysql.createConnection(baseConfig);
+        conn = await mysql.createConnection(connConfig);
         await conn.query(`CREATE DATABASE \`${dbName}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`);
         await conn.end();
-        conn = await mysql.createConnection({ ...baseConfig, database: dbName });
+        conn = await mysql.createConnection({ ...connConfig, database: dbName });
       } else {
         throw e;
       }
