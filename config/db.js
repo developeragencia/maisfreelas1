@@ -3,6 +3,7 @@ const path = require('path');
 // Garante .env carregado mesmo se este módulo for o primeiro a rodar
 try {
   require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
+  if (!process.env.DB_USER && !process.env.DB_NAME) require('dotenv').config();
 } catch (_) {}
 
 const mysql = require('mysql2/promise');

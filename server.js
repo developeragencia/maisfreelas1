@@ -1,7 +1,10 @@
 'use strict';
 const path = require('path');
-// Carrega .env pela pasta do app (evita falha em produção quando cwd é outro)
+// Carrega .env: primeiro da pasta do app, depois da pasta atual (produção pode rodar de outro cwd)
 require('dotenv').config({ path: path.join(__dirname, '.env') });
+if (!process.env.DB_USER && !process.env.DB_NAME) {
+  require('dotenv').config();
+}
 const express = require('express');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
@@ -30,17 +33,15 @@ app.get('/health-db', async (req, res) => {
   try {
     const result = await db.testConnection();
     if (result && result.ok) return res.json({ ok: true, message: 'Banco conectado.' });
-    res.status(503).json({
-      ok: false,
-      message: (result && result.message) || 'Sem conexão',
-      hint: (result && result.code) === 'ECONNREFUSED'
-        ? 'MySQL não está rodando ou DB_HOST/DB_PORT no .env estão errados.'
-        : (result && result.code) === 'ER_ACCESS_DENIED_ERROR'
-        ? 'Usuário ou senha do MySQL no .env estão incorretos.'
-        : (result && result.code) === 'ER_BAD_DB_ERROR'
-        ? 'O banco não existe. Crie o banco e execute database/schema.sql'
-        : 'Verifique .env (DB_HOST, DB_USER, DB_PASSWORD, DB_NAME) e se o MySQL está ativo.',
-    });
+    const msg = (result && result.message) || 'Sem conexão';
+    const isAccessDenied = (result && result.code) === 'ER_ACCESS_DENIED_ERROR';
+    const isEmptyUser = typeof msg === 'string' && (msg.includes("user ''") || msg.includes('using password: NO'));
+    let hint = 'Verifique .env (DB_HOST, DB_USER, DB_PASSWORD, DB_NAME) e se o MySQL está ativo.';
+    if ((result && result.code) === 'ECONNREFUSED') hint = 'MySQL não está rodando ou DB_HOST/DB_PORT estão errados.';
+    else if ((result && result.code) === 'ER_BAD_DB_ERROR') hint = 'O banco não existe. O app cria automaticamente ao subir; confira DB_NAME no .env.';
+    else if (isAccessDenied && isEmptyUser) hint = 'DB_USER e DB_PASSWORD estão vazios. No painel do servidor (ex.: Hostinger), defina as variáveis de ambiente DB_HOST, DB_USER, DB_PASSWORD e DB_NAME, ou coloque um arquivo .env na raiz do projeto com essas variáveis.';
+    else if (isAccessDenied) hint = 'Usuário ou senha do MySQL incorretos. Confira DB_USER e DB_PASSWORD no .env ou nas variáveis de ambiente do servidor.';
+    res.status(503).json({ ok: false, message: msg, hint });
   } catch (e) {
     console.error('health-db:', e.message);
     res.status(503).json({ ok: false, message: 'Erro ao verificar banco.' });

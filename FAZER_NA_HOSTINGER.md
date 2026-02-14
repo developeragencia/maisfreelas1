@@ -30,7 +30,9 @@ Siga na ordem. Quando terminar, o site sobe sem 503.
 
 ---
 
-## 4. Variáveis de ambiente (conferir)
+## 4. Variáveis de ambiente (obrigatório)
+
+**Se /health-db mostrar "Access denied for user ''" ou "using password: NO"**, o servidor não está recebendo **DB_USER** e **DB_PASSWORD**. Defina-as no painel do Node.js App (Environment / Variáveis de ambiente). Sem isso, login e cadastro não funcionam.
 
 No Node.js App, em **Environment** / **Variáveis**, deve ter:
 
