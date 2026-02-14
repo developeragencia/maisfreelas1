@@ -59,6 +59,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Atrás do proxy (Hostinger), a requisição chega em HTTP; cookie com secure: true pode não ser setado.
+// Deixar secure como false garante que o cookie seja gravado; o site continua em HTTPS na ponta.
 app.use(session({
   secret: process.env.SESSION_SECRET || 'maisfreelas-dev',
   resave: false,
@@ -66,7 +68,7 @@ app.use(session({
   name: 'maisfreelas.sid',
   cookie: {
     path: '/',
-    secure: process.env.NODE_ENV === 'production',
+    secure: false,
     maxAge: 7 * 24 * 60 * 60 * 1000,
     sameSite: 'lax',
     httpOnly: true,

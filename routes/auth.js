@@ -42,16 +42,22 @@ router.post('/login', requireGuest, wrapAsync(async (req, res) => {
     const user = rows[0];
     const ok = await bcrypt.compare(password, user.password || '');
     if (!ok) return res.render('login', { error: 'E-mail ou senha incorretos.', redirect });
-    req.session.userId = user.id;
-    req.session.userName = user.name;
-    req.session.userRole = user.role;
-    req.session.save((err) => {
-      if (err) {
-        console.error('Session save:', err.message);
+    req.session.regenerate((errReg) => {
+      if (errReg) {
+        console.error('Session regenerate:', errReg.message);
         return res.render('login', { error: 'Serviço temporariamente indisponível. Tente em alguns minutos.', redirect: null });
       }
-      const goTo = redirect || '/dashboard';
-      res.redirect(302, goTo);
+      req.session.userId = user.id;
+      req.session.userName = user.name;
+      req.session.userRole = user.role;
+      req.session.save((err) => {
+        if (err) {
+          console.error('Session save:', err.message);
+          return res.render('login', { error: 'Serviço temporariamente indisponível. Tente em alguns minutos.', redirect: null });
+        }
+        const goTo = redirect || '/dashboard';
+        res.redirect(302, goTo);
+      });
     });
   } catch (e) {
     console.error('Login:', e.message);
