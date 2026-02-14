@@ -4,6 +4,19 @@ Siga **na ordem**. Se pular um passo, o site continua fora.
 
 ---
 
+## 0. REPOSITÓRIO CORRETO (obrigatório)
+
+O repositório do projeto é **`developeragencia/maisfreelas1`** (com o número 1).
+
+Na Hostinger, em **Import Git** / **Conectar repositório**, use **exatamente**:
+```
+developeragencia/maisfreelas1
+```
+
+**Se estiver usando `maisfreelas` (sem o 1), o deploy falha** – esse repositório não existe. Troque para `maisfreelas1` e faça **Redeploy**.
+
+---
+
 ## 1. Na Hostinger: Node.js App
 
 - **Websites** → clique no site **vemnoquiz.com.br** → **Node.js** (ou **Aplicações Node.js**).
@@ -92,7 +105,8 @@ Adicione **uma por uma** (nome e valor):
 
 ## 7. Se ainda der 503 ou o site não abrir
 
-- Abra **Logs** do Node.js App na Hostinger.
+1. **Repositório:** confira se o Node.js App usa **developeragencia/maisfreelas1** (não `maisfreelas` sem o 1). Se estiver errado, altere e faça **Redeploy**.
+2. **Logs:** abra **Logs** do Node.js App na Hostinger.
 - Procure por:
   - **`MaisFreelas http://0.0.0.0:3000`** → app subiu; se o site não abrir, o problema é domínio/proxy (passo 4).
   - **`Servidor mínimo em http://...`** → o app principal falhou ao carregar; no log deve aparecer **`[Falha ao carregar server.js]`** e o motivo.

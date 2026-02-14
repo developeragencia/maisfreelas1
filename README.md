@@ -9,7 +9,7 @@ Plataforma de projetos e propostas para freelancers. Pronto para produção na H
 Siga o arquivo **FAZER_NA_HOSTINGER.md** passo a passo. Em resumo:
 
 1. Criar banco e usuário MySQL no painel → importar **database/schema.sql** no phpMyAdmin.
-2. **Websites** → **Add Website** → **Node.js Apps** → Import Git (developeragencia/maisfreelas).
+2. **Websites** → **Add Website** → **Node.js Apps** → Import Git (developeragencia/maisfreelas1).
 3. **Start command:** `npm start`. **Variáveis de ambiente:** copiar de **HOSTINGER_VARIAVEIS.txt**.
 4. **Connect domain:** vincular **vemnoquiz.com.br** a esse Node.js App.
 

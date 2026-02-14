@@ -23,7 +23,7 @@ Siga na ordem. Quando terminar, o site sobe sem 503.
 ## 3. Node.js App
 
 - **Websites** → **Add Website** → **Node.js Apps**.
-- **Import Git Repository** → autorize o GitHub → repositório **developeragencia/maisfreelas**.
+- **Import Git Repository** → autorize o GitHub → repositório **developeragencia/maisfreelas1** (com o 1).
 - **Build command:** `npm install --production` (ou o padrão).
 - **Start command:** `npm start`.
 - **Variáveis de ambiente** (obrigatório): adicione cada linha do arquivo **HOSTINGER_VARIAVEIS.txt** (ou cole o bloco, se o painel permitir).

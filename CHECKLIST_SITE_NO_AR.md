@@ -17,7 +17,7 @@ Marque cada item depois de fazer. Quando todos estiverem ok, o site aparece e fu
 ## Node.js App na Hostinger
 
 - [ ] **Websites** → **Add Website** → **Node.js Apps**.
-- [ ] **Import Git Repository** → GitHub → repositório **developeragencia/maisfreelas**.
+- [ ] **Import Git Repository** → GitHub → repositório **developeragencia/maisfreelas1** (com o 1).
 - [ ] **Build command:** `npm install --production` (ou o que o painel sugerir).
 - [ ] **Start command:** `npm start`.
 - [ ] **Variáveis de ambiente:** colou **todas** as linhas do arquivo **HOSTINGER_VARIAVEIS.txt** (ou adicionou cada variável no painel).
