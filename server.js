@@ -19,7 +19,9 @@ const PORT = Number(process.env.PORT) || 3000;
 const HOST = process.env.HOST || (process.env.PORT ? '0.0.0.0' : 'localhost');
 
 process.on('uncaughtException', (e) => console.error('uncaughtException', e.message));
-process.on('unhandledRejection', (r) => console.error('unhandledRejection', r));
+process.on('unhandledRejection', (r) => {
+  console.error('unhandledRejection', r && (r.message || r));
+});
 
 app.get('/health', (req, res) => res.status(200).send('ok'));
 
@@ -70,6 +72,7 @@ app.use(session({
 }));
 
 const notifications = require('./lib/notifications');
+const { wrapAsync } = require('./lib/asyncHandler');
 
 app.use((req, res, next) => {
   res.locals.user = req.session?.userId
@@ -78,7 +81,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(async (req, res, next) => {
+app.use(wrapAsync(async (req, res, next) => {
   res.locals.notificationsUnread = 0;
   if (req.session && req.session.userId) {
     try {
@@ -86,9 +89,9 @@ app.use(async (req, res, next) => {
     } catch (_) {}
   }
   next();
-});
+}));
 
-app.get('/', async (req, res, next) => {
+app.get('/', wrapAsync(async (req, res, next) => {
   let featuredProjects = [];
   try {
     const [rows] = await db.query(
@@ -98,12 +101,8 @@ app.get('/', async (req, res, next) => {
     );
     featuredProjects = rows || [];
   } catch (_) {}
-  try {
-    res.render('home', { featuredProjects });
-  } catch (e) {
-    next(e);
-  }
-});
+  res.render('home', { featuredProjects });
+}));
 
 app.use(authRoutes);
 app.use('/projetos', projectRoutes);

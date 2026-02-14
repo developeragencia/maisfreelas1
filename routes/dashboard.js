@@ -2,10 +2,12 @@
 const express = require('express');
 const db = require('../config/db');
 const { requireAuth } = require('../middleware/auth');
+const { wrapAsync } = require('../lib/asyncHandler');
 
 const router = express.Router();
+const emptyStats = { projectsTotal: 0, projectsCompleted: 0, proposalsTotal: 0, proposalsAccepted: 0, valueReceived: 0, valuePublished: 0 };
 
-router.get('/', requireAuth, async (req, res) => {
+router.get('/', requireAuth, wrapAsync(async (req, res) => {
   const uid = req.session.userId;
   const user = { id: uid, name: req.session.userName, role: req.session.userRole };
   try {
@@ -16,7 +18,7 @@ router.get('/', requireAuth, async (req, res) => {
        WHERE pr.freelancer_id = ? ORDER BY pr.created_at DESC`,
       [uid]
     );
-    let stats = { projectsTotal: 0, projectsCompleted: 0, proposalsTotal: 0, proposalsAccepted: 0, valueReceived: 0, valuePublished: 0 };
+    let stats = { ...emptyStats };
     try {
       const [[r1]] = await db.query('SELECT COUNT(*) as c, COALESCE(SUM(budget), 0) as total FROM projects WHERE client_id = ?', [uid]);
       stats.projectsTotal = (r1 && r1.c) || 0;
@@ -29,20 +31,11 @@ router.get('/', requireAuth, async (req, res) => {
       stats.proposalsAccepted = (r4 && r4.c) || 0;
       stats.valueReceived = Number((r4 && r4.total) || 0);
     } catch (_) {}
-    res.render('dashboard', {
-      myProjects: myProjects || [],
-      myProposals: myProposals || [],
-      stats,
-      user,
-    });
+    res.render('dashboard', { myProjects: myProjects || [], myProposals: myProposals || [], stats, user });
   } catch (e) {
-    res.render('dashboard', {
-      myProjects: [],
-      myProposals: [],
-      stats: { projectsTotal: 0, projectsCompleted: 0, proposalsTotal: 0, proposalsAccepted: 0, valueReceived: 0, valuePublished: 0 },
-      user,
-    });
+    console.error('Dashboard:', e.message);
+    res.render('dashboard', { myProjects: [], myProposals: [], stats: emptyStats, user });
   }
-});
+}));
 
 module.exports = router;

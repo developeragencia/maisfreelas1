@@ -3,10 +3,13 @@ const express = require('express');
 const db = require('../config/db');
 const { requireAuth } = require('../middleware/auth');
 const notifications = require('../lib/notifications');
+const { wrapAsync } = require('../lib/asyncHandler');
 
 const router = express.Router();
 
-router.get('/', async (req, res) => {
+const emptyProjects = { projects: [], categories: [], currentCategory: null, searchQ: null, searchBudgetMin: null, searchBudgetMax: null, searchLevel: null, user: null };
+
+router.get('/', wrapAsync(async (req, res) => {
   try {
     const category = typeof req.query.categoria === 'string' ? req.query.categoria.trim() : '';
     const q = typeof req.query.q === 'string' ? req.query.q.trim() : '';
@@ -33,12 +36,17 @@ router.get('/', async (req, res) => {
       searchBudgetMin: !isNaN(budgetMin) ? budgetMin : null,
       searchBudgetMax: !isNaN(budgetMax) ? budgetMax : null,
       searchLevel: level || null,
-      user: res.locals.user,
+      user: res.locals.user || null,
     });
   } catch (e) {
-    res.render('projects/index', { projects: [], categories: [], currentCategory: null, searchQ: null, searchBudgetMin: null, searchBudgetMax: null, searchLevel: null, user: null });
+    console.error('Projects list:', e.message);
+    try {
+      res.render('projects/index', { ...emptyProjects, user: res.locals.user || null });
+    } catch (_) {
+      res.redirect('/');
+    }
   }
-});
+}));
 
 router.get('/publicar', requireAuth, (req, res) => {
   res.render('projects/create', { error: null });

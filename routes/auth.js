@@ -3,6 +3,7 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const db = require('../config/db');
 const { requireGuest, requireAuth } = require('../middleware/auth');
+const { wrapAsync } = require('../lib/asyncHandler');
 
 const router = express.Router();
 const ROLES = ['client', 'freelancer', 'both'];
@@ -30,7 +31,7 @@ router.get('/login', requireGuest, (req, res) => {
   }
 });
 
-router.post('/login', requireGuest, async (req, res) => {
+router.post('/login', requireGuest, wrapAsync(async (req, res) => {
   const email = (req.body && req.body.email) ? String(req.body.email).trim() : '';
   const password = req.body && req.body.password ? String(req.body.password) : '';
   const redirect = getRedirect(req);
@@ -47,16 +48,19 @@ router.post('/login', requireGuest, async (req, res) => {
     req.session.save((err) => {
       if (err) {
         console.error('Session save:', err.message);
-        return res.render('login', { error: 'Erro ao entrar. Tente de novo.', redirect: null });
+        return res.render('login', { error: 'Serviço temporariamente indisponível. Tente em alguns minutos.', redirect: null });
       }
       const goTo = redirect || '/dashboard';
       res.redirect(302, goTo);
     });
   } catch (e) {
     console.error('Login:', e.message);
-    res.render('login', { error: 'Erro ao entrar. Tente de novo.', redirect: null });
+    const msg = (e.code === 'ECONNREFUSED' || e.code === 'ER_ACCESS_DENIED_ERROR' || e.code === 'ER_BAD_DB_ERROR' || e.code === 'ER_NO_SUCH_TABLE')
+      ? 'Serviço temporariamente indisponível. Tente em alguns minutos.'
+      : 'Erro ao entrar. Tente de novo.';
+    res.render('login', { error: msg, redirect: null });
   }
-});
+}));
 
 router.get('/cadastro', requireGuest, (req, res) => {
   res.render('register', { error: null });
